@@ -2965,60 +2965,161 @@ class="page">
 
     <div class="modal-content">
 
-        <span
-        class="close"
-        onclick="closeModal('employeeModal')">
-        ×
-        </span>
+        <div class="modal-form-header">
 
-        <h2>Nouvel Employé</h2>
+            <div class="modal-form-title">
 
-        <form id="employeeForm">
+                <div class="modal-form-icon">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
 
-            <input
-            type="text"
-            name="matricule"
-            placeholder="Matricule">
+                <div>
+                    <h2>Nouvel employé</h2>
 
-            <input
-            type="text"
-            name="nom"
-            placeholder="Nom">
+                    <p>
+                        Ajouter un membre du personnel.
+                    </p>
+                </div>
 
-            <input
-            type="text"
-            name="prenom"
-            placeholder="Prénom">
-
-            <input
-            type="text"
-            name="fonction"
-            placeholder="Fonction">
-
-            <input
-            type="email"
-            name="email"
-            placeholder="Email">
-
-            <input
-            type="text"
-            name="telephone"
-            placeholder="Téléphone">
+            </div>
 
             <button
-            type="button"
-            onclick="saveEmployee()">
-
-                Enregistrer
-
+                type="button"
+                class="modal-close"
+                onclick="closeModal('employeeModal')"
+            >
+                ×
             </button>
 
-        </form>
+        </div>
+
+
+        <div class="modal-form-body">
+
+            <form id="employeeForm">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="employeeMatricule">
+                            Matricule
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <input
+                            id="employeeMatricule"
+                            type="text"
+                            name="matricule"
+                            placeholder="Ex. M001"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="employeeStatut">
+                            Statut
+                        </label>
+
+                        <select
+                            id="employeeStatut"
+                            name="statut"
+                        >
+                            <option value="ACTIF">Actif</option>
+                            <option value="INACTIF">Inactif</option>
+                            <option value="SUSPENDU">Suspendu</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="employeeNom">
+                            Nom
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <input
+                            id="employeeNom"
+                            type="text"
+                            name="nom"
+                            placeholder="Nom"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="employeePrenom">
+                            Prénom
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <input
+                            id="employeePrenom"
+                            type="text"
+                            name="prenom"
+                            placeholder="Prénom"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group full">
+
+                        <label for="employeeFonction">
+                            Fonction
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <input
+                            id="employeeFonction"
+                            type="text"
+                            name="fonction"
+                            placeholder="Ex. Technicien avionique"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="btn-cancel"
+                        onclick="closeModal('employeeModal')"
+                    >
+                        Annuler
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-submit"
+                        onclick="saveEmployee()"
+                    >
+                        <i class="fa-solid fa-user-check"></i>
+                        Enregistrer l’employé
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
 
     </div>
 
 </div>
-
 
 <!-- ===================================== -->
 <!-- MODAL CLIENT -->
@@ -3028,55 +3129,153 @@ class="page">
 
     <div class="modal-content">
 
-        <span
-        class="close"
-        onclick="closeModal('clientModal')">
-        ×
-        </span>
+        <div class="modal-form-header">
 
-        <h2>Nouveau Client</h2>
+            <div class="modal-form-title">
 
-        <form id="clientForm">
+                <div class="modal-form-icon">
+                    <i class="fa-solid fa-handshake"></i>
+                </div>
 
-            <input
-            type="text"
-            name="nom_societe"
-            placeholder="Société">
+                <div>
+                    <h2>Nouveau client</h2>
 
-            <input
-            type="text"
-            name="contact_principal"
-            placeholder="Contact">
+                    <p>
+                        Ajouter une société cliente.
+                    </p>
+                </div>
 
-            <input
-            type="text"
-            name="telephone"
-            placeholder="Téléphone">
-
-            <input
-            type="email"
-            name="email"
-            placeholder="Email">
-
-            <input
-            type="text"
-            name="type_aeronef"
-            placeholder="Type aéronef">
+            </div>
 
             <button
-            type="button"
-            onclick="saveClient()">
-
-                Enregistrer
-
+                type="button"
+                class="modal-close"
+                onclick="closeModal('clientModal')"
+            >
+                ×
             </button>
 
-        </form>
+        </div>
+
+
+        <div class="modal-form-body">
+
+            <form id="clientForm">
+
+                <div class="form-grid">
+
+                    <div class="form-group full">
+
+                        <label for="clientSociete">
+                            Société
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <input
+                            id="clientSociete"
+                            type="text"
+                            name="nom_societe"
+                            placeholder="Nom de la société"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="clientContact">
+                            Contact principal
+                        </label>
+
+                        <input
+                            id="clientContact"
+                            type="text"
+                            name="contact_principal"
+                            placeholder="Nom du contact"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="clientTelephone">
+                            Téléphone
+                        </label>
+
+                        <input
+                            id="clientTelephone"
+                            type="tel"
+                            name="telephone"
+                            placeholder="+212 6 00 00 00 00"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="clientEmail">
+                            Adresse e-mail
+                        </label>
+
+                        <input
+                            id="clientEmail"
+                            type="email"
+                            name="email"
+                            placeholder="contact@entreprise.com"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="clientAeronef">
+                            Type d’aéronef
+                        </label>
+
+                        <input
+                            id="clientAeronef"
+                            type="text"
+                            name="type_aeronef"
+                            placeholder="Ex. ATR 72"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="btn-cancel"
+                        onclick="closeModal('clientModal')"
+                    >
+                        Annuler
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-submit"
+                        onclick="saveClient()"
+                    >
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Enregistrer le client
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
 
     </div>
 
 </div>
-
 
 <!-- ===================================== -->
 <!-- MODAL DOCUMENT -->
@@ -3281,56 +3480,166 @@ class="page">
 
     <div class="modal-content">
 
-        <span
-        class="close"
-        onclick="closeModal('pieceModal')">
-        ×
-        </span>
+        <div class="modal-form-header">
 
-        <h2>Nouvelle Pièce</h2>
+            <div class="modal-form-title">
 
-        <form id="pieceForm">
+                <div class="modal-form-icon">
+                    <i class="fa-solid fa-box-open"></i>
+                </div>
 
-            <input
-            type="text"
-            name="reference_piece"
-            placeholder="Référence">
+                <div>
+                    <h2>Nouvelle pièce</h2>
 
-            <input
-            type="text"
-            name="designation"
-            placeholder="Désignation">
+                    <p>
+                        Ajouter une pièce au stock aéronautique.
+                    </p>
+                </div>
 
-            <input
-            type="text"
-            name="categorie"
-            placeholder="Catégorie">
-
-            <input
-            type="number"
-            name="quantite_stock"
-            placeholder="Stock">
-
-            <input
-            type="number"
-            name="stock_alerte"
-            placeholder="Alerte">
-
-            <input
-            type="number"
-            step="0.01"
-            name="prix_unitaire"
-            placeholder="Prix">
+            </div>
 
             <button
-            type="button"
-            onclick="savePiece()">
-
-                Enregistrer
-
+                type="button"
+                class="modal-close"
+                onclick="closeModal('pieceModal')"
+            >
+                ×
             </button>
 
-        </form>
+        </div>
+
+
+        <div class="modal-form-body">
+
+            <form id="pieceForm">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="pieceReference">
+                            Référence
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <input
+                            id="pieceReference"
+                            type="text"
+                            name="reference_piece"
+                            placeholder="Ex. P001"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="pieceCategorie">
+                            Catégorie
+                        </label>
+
+                        <select
+                            id="pieceCategorie"
+                            name="categorie"
+                        >
+                            <option value="">
+                                Sélectionner
+                            </option>
+
+                            <option value="MOTEUR">Moteur</option>
+                            <option value="AVIONIQUE">Avionique</option>
+                            <option value="HYDRAULIQUE">Hydraulique</option>
+                            <option value="STRUCTURE">Structure</option>
+                            <option value="CABINE">Cabine</option>
+                            <option value="AUTRE">Autre</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group full">
+
+                        <label for="pieceDesignation">
+                            Désignation
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <input
+                            id="pieceDesignation"
+                            type="text"
+                            name="designation"
+                            placeholder="Nom de la pièce"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="pieceQuantite">
+                            Quantité en stock
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <input
+                            id="pieceQuantite"
+                            type="number"
+                            name="quantite_stock"
+                            min="0"
+                            value="0"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="pieceAlerte">
+                            Seuil d’alerte
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <input
+                            id="pieceAlerte"
+                            type="number"
+                            name="stock_alerte"
+                            min="0"
+                            value="0"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="btn-cancel"
+                        onclick="closeModal('pieceModal')"
+                    >
+                        Annuler
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-submit"
+                        onclick="savePiece()"
+                    >
+                        <i class="fa-solid fa-box"></i>
+                        Enregistrer la pièce
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
 
     </div>
 
