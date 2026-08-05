@@ -3086,45 +3086,187 @@ class="page">
 
     <div class="modal-content">
 
-        <span
-        class="close"
-        onclick="closeModal('documentModal')">
-        ×
-        </span>
+        <div class="modal-form-header">
 
-        <h2>Ajouter Document</h2>
+            <div class="modal-form-title">
 
-        <form
-        id="documentForm"
-        enctype="multipart/form-data">
+                <div class="modal-form-icon">
+                    <i class="fa-solid fa-file-circle-plus"></i>
+                </div>
 
-            <input
-            type="text"
-            name="type_document"
-            placeholder="Type document">
+                <div>
+                    <h2>Ajouter un document</h2>
 
-            <input
-            type="date"
-            name="date_expiration">
+                    <p>
+                        Enregistrer un document et ses informations
+                        de validité.
+                    </p>
+                </div>
 
-            <input
-            type="file"
-            name="file">
-
-            <textarea
-            name="commentaire"
-            placeholder="Commentaire">
-            </textarea>
+            </div>
 
             <button
-            type="button"
-            onclick="saveDocument()">
-
-                Enregistrer
-
+                type="button"
+                class="modal-close"
+                onclick="closeModal('documentModal')"
+                aria-label="Fermer"
+            >
+                ×
             </button>
 
-        </form>
+        </div>
+
+
+        <div class="modal-form-body">
+
+            <form id="documentForm">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="documentType">
+                            Type de document
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <select
+                            id="documentType"
+                            name="type_document"
+                            required
+                        >
+                            <option value="">
+                                Sélectionner un type
+                            </option>
+
+                            <option value="Licence Aéronautique">
+                                Licence aéronautique
+                            </option>
+
+                            <option value="Certificat Médical">
+                                Certificat médical
+                            </option>
+
+                            <option value="Qualification ATR72">
+                                Qualification ATR72
+                            </option>
+
+                            <option value="Autorisation Piste">
+                                Autorisation piste
+                            </option>
+
+                            <option value="Formation Sécurité">
+                                Formation sécurité
+                            </option>
+
+                            <option value="Passeport">
+                                Passeport
+                            </option>
+
+                            <option value="CV">
+                                Curriculum vitae
+                            </option>
+
+                            <option value="AUTRE">
+                                Autre
+                            </option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="documentExpiration">
+                            Date d’expiration
+                        </label>
+
+                        <input
+                            id="documentExpiration"
+                            type="date"
+                            name="date_expiration"
+                        >
+
+                        <span class="form-help">
+                            Laisser vide si le document n’expire pas.
+                        </span>
+
+                    </div>
+
+
+                    <div class="form-group full">
+
+                        <label>
+                            Fichier
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <label class="file-input-wrapper">
+
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+
+                            <strong>
+                                Cliquer ou déposer un fichier
+                            </strong>
+
+                            <span>
+                                PDF, JPG ou PNG
+                            </span>
+
+                            <input
+                                id="documentFile"
+                                type="file"
+                                name="file"
+                                accept=".pdf,.jpg,.jpeg,.png"
+                                required
+                            >
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="form-group full">
+
+                        <label for="documentDescription">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="documentDescription"
+                            name="description"
+                            placeholder="Ajouter une remarque ou une description..."
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="btn-cancel"
+                        onclick="closeModal('documentModal')"
+                    >
+                        Annuler
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-submit"
+                        onclick="saveDocument()"
+                    >
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Enregistrer le document
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
 
     </div>
 
