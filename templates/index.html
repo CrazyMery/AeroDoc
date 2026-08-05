@@ -1525,6 +1525,402 @@ tr:hover{
         flex-direction: column;
     }
 }  
+
+ /* =====================================================
+   FORMULAIRES ET MODALES MODERNES
+===================================================== */
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    padding: 24px;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(7px);
+}
+
+.modal-content {
+    position: relative;
+
+    width: min(760px, 100%);
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+
+    padding: 0;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+
+    box-shadow:
+        0 30px 90px rgba(15, 23, 42, 0.35);
+
+    animation: modalOpen 0.22s ease;
+}
+
+@keyframes modalOpen {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+
+    padding: 22px 26px;
+
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.modal-form-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.modal-form-icon {
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    color: #185fa5;
+    background: #e6f1fb;
+
+    border-radius: 14px;
+
+    font-size: 19px;
+}
+
+.modal-form-title h2 {
+    margin: 0;
+
+    color: #172033;
+
+    font-size: 21px;
+    font-weight: 750;
+}
+
+.modal-form-title p {
+    margin-top: 4px;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+.modal-close,
+.close {
+    position: static;
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border: none;
+    border-radius: 11px;
+
+    background: #f1f5f9;
+    color: #64748b;
+
+    cursor: pointer;
+
+    font-size: 22px;
+    line-height: 1;
+
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.modal-close:hover,
+.close:hover {
+    color: #dc2626;
+    background: #fee2e2;
+}
+
+.modal-form-body {
+    padding: 25px 26px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.form-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    color: #334155;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.form-required {
+    color: #dc2626;
+}
+
+.form-help {
+    color: #94a3b8;
+
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.form-control,
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    min-height: 45px;
+
+    padding: 11px 13px;
+
+    color: #111827;
+    background: #ffffff;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 11px;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        background-color 0.15s ease;
+}
+
+.form-group textarea {
+    min-height: 115px;
+    resize: vertical;
+}
+
+.form-control:hover,
+.form-group input:hover,
+.form-group select:hover,
+.form-group textarea:hover {
+    border-color: #94a3b8;
+}
+
+.form-control:focus,
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #185fa5;
+
+    box-shadow:
+        0 0 0 4px rgba(24, 95, 165, 0.11);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #9ca3af;
+}
+
+.file-input-wrapper {
+    position: relative;
+
+    min-height: 110px;
+    padding: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 9px;
+
+    text-align: center;
+
+    color: #64748b;
+    background: #f8fafc;
+
+    border: 2px dashed #cbd5e1;
+    border-radius: 14px;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.15s ease,
+        background-color 0.15s ease;
+}
+
+.file-input-wrapper:hover {
+    border-color: #185fa5;
+    background: #eff6ff;
+}
+
+.file-input-wrapper i {
+    color: #185fa5;
+    font-size: 25px;
+}
+
+.file-input-wrapper strong {
+    color: #334155;
+    font-size: 13px;
+}
+
+.file-input-wrapper span {
+    font-size: 11px;
+}
+
+.file-input-wrapper input[type="file"] {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    opacity: 0;
+    cursor: pointer;
+}
+
+.form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 11px;
+
+    margin-top: 24px;
+    padding-top: 20px;
+
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn-cancel,
+.btn-submit {
+    min-height: 43px;
+    padding: 10px 18px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    border-radius: 11px;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.btn-cancel {
+    color: #475569;
+    background: #f1f5f9;
+
+    border: 1px solid #e2e8f0;
+}
+
+.btn-cancel:hover {
+    background: #e2e8f0;
+}
+
+.btn-submit {
+    color: #ffffff;
+    background: #185fa5;
+
+    border: none;
+
+    box-shadow:
+        0 8px 18px rgba(24, 95, 165, 0.22);
+}
+
+.btn-submit:hover {
+    background: #0f4f8d;
+    transform: translateY(-1px);
+}
+
+.form-section-title {
+    grid-column: 1 / -1;
+
+    margin-top: 4px;
+    padding-bottom: 8px;
+
+    color: #185fa5;
+
+    border-bottom: 1px solid #e2e8f0;
+
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+@media (max-width: 700px) {
+    .modal {
+        padding: 12px;
+    }
+
+    .modal-content {
+        max-height: calc(100vh - 24px);
+    }
+
+    .form-grid,
+    .form-grid-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-form-header,
+    .modal-form-body {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .btn-cancel,
+    .btn-submit {
+        width: 100%;
+    }
+}  
 </style>
 </head>
 
