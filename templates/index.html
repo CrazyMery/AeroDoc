@@ -1,0 +1,2823 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+AeroDoc - Delta Aerospace
+</title>
+
+
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<link
+href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css"
+rel="stylesheet">
+
+<script
+src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js">
+</script>
+
+
+<style>
+
+    *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+
+    --blue:#185FA5;
+    --blue-dark:#0f4f8d;
+    --blue-light:#E6F1FB;
+
+    --green:#2E7D32;
+    --green-light:#E8F5E9;
+
+    --orange:#D97706;
+    --orange-light:#FFF7ED;
+
+    --red:#DC2626;
+    --red-light:#FEE2E2;
+
+    --purple:#7C3AED;
+    --purple-light:#F3E8FF;
+
+    --gray:#6B7280;
+    --gray-light:#F3F4F6;
+
+    --border:#E5E7EB;
+
+    --bg:#F8FAFC;
+    --card:#FFFFFF;
+
+    --sidebar-width:260px;
+    --header-height:70px;
+
+    --shadow:
+    0 10px 35px rgba(0,0,0,.08);
+}
+
+body{
+
+    font-family:
+    "Segoe UI",
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+
+    background:var(--bg);
+
+    color:#111827;
+
+    overflow:hidden;
+}
+#app{
+
+    display:flex;
+    height:100vh;
+}
+
+#sidebar{
+
+    width:var(--sidebar-width);
+
+    background:white;
+
+    border-right:1px solid var(--border);
+
+    overflow-y:auto;
+}
+
+.logo{
+
+    height:80px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:20px;
+
+    border-bottom:1px solid var(--border);
+}
+
+.logo i{
+
+    font-size:32px;
+
+    color:var(--blue);
+}
+
+.logo-name{
+
+    font-size:18px;
+
+    font-weight:700;
+}
+
+.nav-section{
+
+    padding:20px 20px 8px;
+
+    color:#9CA3AF;
+
+    font-size:11px;
+
+    text-transform:uppercase;
+
+    font-weight:700;
+}
+
+nav a{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:12px 20px;
+
+    cursor:pointer;
+
+    color:#374151;
+
+    text-decoration:none;
+
+    border-left:4px solid transparent;
+}
+
+nav a:hover{
+
+    background:#F3F4F6;
+}
+
+nav a.active{
+
+    background:#E6F1FB;
+
+    border-left-color:var(--blue);
+
+    color:var(--blue);
+}
+#main{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+}
+
+#topbar{
+
+    height:var(--header-height);
+
+    background:white;
+
+    border-bottom:1px solid var(--border);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 25px;
+}
+
+#content{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:20px;
+}
+.card{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:20px;
+
+    margin-bottom:20px;
+
+    box-shadow:var(--shadow);
+}
+
+.card-title{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    margin-bottom:20px;
+}
+.kpi-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(180px,1fr));
+
+    gap:15px;
+
+    margin-bottom:25px;
+}
+
+.kpi{
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:18px;
+
+    box-shadow:var(--shadow);
+}
+
+.kpi .icon{
+
+    width:50px;
+    height:50px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:14px;
+
+    margin-bottom:12px;
+
+    font-size:22px;
+}
+
+.kpi .val{
+
+    font-size:32px;
+
+    font-weight:700;
+}
+
+.kpi .lbl{
+
+    margin-top:8px;
+
+    color:#6B7280;
+}
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+}
+
+th{
+
+    background:#F9FAFB;
+
+    padding:12px;
+
+    text-align:left;
+
+    font-size:12px;
+
+    text-transform:uppercase;
+}
+
+td{
+
+    padding:12px;
+
+    border-bottom:1px solid #F3F4F6;
+}
+
+tr:hover{
+
+    background:#FAFAFA;
+}
+.btn{
+
+    border:none;
+
+    cursor:pointer;
+
+    padding:10px 16px;
+
+    border-radius:10px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+}
+
+.btn.primary{
+
+    background:var(--blue);
+
+    color:white;
+}
+
+.btn.primary:hover{
+
+    background:var(--blue-dark);
+}
+
+.btn.success{
+
+    background:var(--green);
+
+    color:white;
+}
+
+.btn.danger{
+
+    background:var(--red);
+
+    color:white;
+}
+
+.btn.warning{
+
+    background:var(--orange);
+
+    color:white;
+}
+.form-grid-2{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(2,1fr);
+
+    gap:15px;
+}
+
+.form-grid-3{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(3,1fr);
+
+    gap:15px;
+}
+
+.form-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:6px;
+}
+
+.form-group label{
+
+    font-size:13px;
+
+    font-weight:600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+
+    padding:10px;
+
+    border:1px solid #D1D5DB;
+
+    border-radius:10px;
+
+    width:100%;
+}
+.modal{
+
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+    rgba(0,0,0,.5);
+
+    z-index:9999;
+
+    justify-content:center;
+
+    align-items:center;
+
+    backdrop-filter:blur(5px);
+}
+
+.modal-content{
+
+    background:white;
+
+    width:900px;
+
+    max-width:95%;
+
+    max-height:90vh;
+
+    overflow:auto;
+
+    border-radius:20px;
+
+    padding:25px;
+
+    box-shadow:
+    0 25px 80px rgba(0,0,0,.25);
+}
+
+.modal-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+}
+
+.modal-close{
+
+    border:none;
+
+    background:none;
+
+    font-size:28px;
+
+    cursor:pointer;
+}
+#calendar{
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:15px;
+
+    min-height:700px;
+
+    box-shadow:var(--shadow);
+}
+.badge{
+
+    padding:6px 12px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:700;
+}
+
+.badge-success{
+
+    background:#DCFCE7;
+
+    color:#166534;
+}
+
+.badge-warning{
+
+    background:#FEF3C7;
+
+    color:#92400E;
+}
+
+.badge-danger{
+
+    background:#FEE2E2;
+
+    color:#991B1B;
+}
+
+.badge-info{
+
+    background:#DBEAFE;
+
+    color:#1D4ED8;
+}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+    <!-- ===================================== -->
+    <!-- SIDEBAR -->
+    <!-- ===================================== -->
+
+    <aside id="sidebar">
+
+        <div class="logo">
+
+            <i class="fa-solid fa-plane"></i>
+
+            <span>
+                AeroDoc
+            </span>
+
+        </div>
+
+        <nav>
+
+            <a
+            id="nav-dashboard"
+            class="active"
+            onclick="showPage('dashboard')">
+
+                <i class="fa-solid fa-chart-line"></i>
+
+                Dashboard
+
+            </a>
+
+            <a
+            id="nav-employees"
+            onclick="showPage('employees')">
+
+                <i class="fa-solid fa-users"></i>
+
+                Employés
+
+            </a>
+
+            <a
+            id="nav-documents"
+            onclick="showPage('documents')">
+
+                <i class="fa-solid fa-folder-open"></i>
+
+                Documents
+
+            </a>
+
+            <a
+            id="nav-clients"
+            onclick="showPage('clients')">
+
+                <i class="fa-solid fa-handshake"></i>
+
+                Clients
+
+            </a>
+
+            <a
+            id="nav-stock"
+            onclick="showPage('stock')">
+
+                <i class="fa-solid fa-boxes-stacked"></i>
+
+                Stock
+
+            </a>
+
+            <a
+            id="nav-maintenance"
+            onclick="showPage('maintenance')">
+
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+
+                Maintenance
+
+            </a>
+
+            <a
+            id="nav-agenda"
+            onclick="showPage('agenda')">
+
+                <i class="fa-solid fa-calendar-days"></i>
+
+                Agenda
+
+            </a>
+
+            <a
+            id="nav-ocr"
+            onclick="showPage('ocr')">
+
+                <i class="fa-solid fa-camera"></i>
+
+                OCR
+
+            </a>
+
+            <a
+            id="nav-signatures"
+            onclick="showPage('signatures')">
+
+                <i class="fa-solid fa-signature"></i>
+
+                Signatures
+
+            </a>
+
+            <a
+            id="nav-users"
+            onclick="showPage('users')">
+
+                <i class="fa-solid fa-user-shield"></i>
+
+                Utilisateurs
+
+            </a>
+
+        </nav>
+
+    </aside>
+
+    <!-- ===================================== -->
+    <!-- CONTENU -->
+    <!-- ===================================== -->
+
+    <main id="content">
+
+        <!-- HEADER -->
+
+        <header id="topbar">
+
+            <h1 id="page-title">
+
+                Dashboard
+
+            </h1>
+
+            <div class="topbar-right">
+
+                <span id="topAlertCount">
+
+                    0
+
+                </span>
+
+                <a href="/logout">
+
+                    Déconnexion
+
+                </a>
+
+            </div>
+
+        </header>
+
+        <!-- ===================================== -->
+        <!-- DASHBOARD -->
+        <!-- ===================================== -->
+
+        <section
+        id="page-dashboard"
+        class="page active">
+
+            <div class="kpi-grid">
+
+                <div class="kpi-card">
+
+                    <h3>Employés</h3>
+
+                    <span id="kpiEmployees">
+
+                        0
+
+                    </span>
+
+                </div>
+
+                <div class="kpi-card">
+
+                    <h3>Documents</h3>
+
+                    <span id="kpiDocuments">
+
+                        0
+
+                    </span>
+
+                </div>
+
+                <div class="kpi-card">
+
+                    <h3>Clients</h3>
+
+                    <span id="kpiClients">
+
+                        0
+
+                    </span>
+
+                </div>
+
+                <div class="kpi-card">
+
+                    <h3>Maintenances</h3>
+
+                    <span id="kpiMaintenance">
+
+                        0
+
+                    </span>
+
+                </div>
+
+                <div class="kpi-card">
+
+                    <h3>Alertes</h3>
+
+                    <span id="kpiAlerts">
+
+                        0
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- KPI avancés -->
+
+            <div class="kpi-grid">
+
+                <div class="kpi-card">
+
+                    <h3>Stock Total</h3>
+
+                    <span id="kpiStock">
+
+                        0
+
+                    </span>
+
+                </div>
+
+                <div class="kpi-card">
+
+                    <h3>Pièces critiques</h3>
+
+                    <span id="kpiCriticalParts">
+
+                        0
+
+                    </span>
+
+                </div>
+
+                <div class="kpi-card">
+
+                    <h3>Ruptures</h3>
+
+                    <span id="kpiOutParts">
+
+                        0
+
+                    </span>
+
+                </div>
+
+                <div class="kpi-card">
+
+                    <h3>Documents valides</h3>
+
+                    <span id="kpiValidDocs">
+
+                        0
+
+                    </span>
+
+                </div>
+
+                <div class="kpi-card">
+
+                    <h3>A renouveler</h3>
+
+                    <span id="kpiRenewDocs">
+
+                        0
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- Graphiques -->
+
+            <div class="charts-grid">
+
+                <div class="chart-card">
+
+                    <h3>
+                        Conformité documentaire
+                    </h3>
+
+                    <canvas
+                    id="chartCompliance">
+                    </canvas>
+
+                </div>
+
+                <div class="chart-card">
+
+                    <h3>
+                        Qualifications
+                    </h3>
+
+                    <canvas
+                    id="chartQualifications">
+                    </canvas>
+
+                </div>
+
+            </div>
+
+            <div class="charts-grid">
+
+                <div class="chart-card">
+
+                    <h3>
+                        Pièces les plus utilisées
+                    </h3>
+
+                    <canvas
+                    id="chartTopParts">
+                    </canvas>
+
+                </div>
+
+                <div class="chart-card">
+
+                    <h3>
+                        État du stock
+                    </h3>
+
+                    <canvas
+                    id="chartStock">
+                    </canvas>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+<!-- ===================================== -->
+<!-- EMPLOYES -->
+<!-- ===================================== -->
+
+<section
+id="page-employees"
+class="page">
+
+    <div class="page-header">
+
+        <h2>
+            Gestion des Employés
+        </h2>
+
+        <button
+        class="btn-primary"
+        onclick="openModal('employeeModal')">
+
+            <i class="fa fa-plus"></i>
+
+            Nouvel Employé
+
+        </button>
+
+    </div>
+
+    <table class="data-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Matricule</th>
+
+                <th>Nom</th>
+
+                <th>Prénom</th>
+
+                <th>Fonction</th>
+
+                <th>Statut</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody
+        id="employeesTableBody">
+
+        </tbody>
+
+    </table>
+
+</section>
+
+
+<!-- ===================================== -->
+<!-- DOCUMENTS -->
+<!-- ===================================== -->
+
+<section
+id="page-documents"
+class="page">
+
+    <div class="page-header">
+
+        <h2>
+            Gestion Documentaire
+        </h2>
+
+        <button
+        class="btn-primary"
+        onclick="openModal('documentModal')">
+
+            <i class="fa fa-plus"></i>
+
+            Ajouter Document
+
+        </button>
+
+    </div>
+
+    <table class="data-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Fichier</th>
+
+                <th>Type</th>
+
+                <th>Expiration</th>
+
+                <th>Statut</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody
+        id="documentsTableBody">
+
+        </tbody>
+
+    </table>
+
+</section>
+
+
+<!-- ===================================== -->
+<!-- CLIENTS -->
+<!-- ===================================== -->
+
+<section
+id="page-clients"
+class="page">
+
+    <div class="page-header">
+
+        <h2>
+            Gestion Clients
+        </h2>
+
+        <button
+        class="btn-primary"
+        onclick="openModal('clientModal')">
+
+            <i class="fa fa-plus"></i>
+
+            Nouveau Client
+
+        </button>
+
+    </div>
+
+    <table class="data-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Société</th>
+
+                <th>Contact</th>
+
+                <th>Téléphone</th>
+
+                <th>Email</th>
+
+                <th>Aéronef</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody
+        id="clientsTableBody">
+
+        </tbody>
+
+    </table>
+
+</section>
+
+
+<!-- ===================================== -->
+<!-- STOCK -->
+<!-- ===================================== -->
+
+<section
+id="page-stock"
+class="page">
+
+    <div class="page-header">
+
+        <h2>
+            Stock Aéronautique
+        </h2>
+
+        <button
+        class="btn-primary"
+        onclick="openModal('pieceModal')">
+
+            <i class="fa fa-plus"></i>
+
+            Nouvelle Pièce
+
+        </button>
+
+    </div>
+
+    <table class="data-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Référence</th>
+
+                <th>Désignation</th>
+
+                <th>Catégorie</th>
+
+                <th>Stock</th>
+
+                <th>Alerte</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody
+        id="stockTableBody">
+
+        </tbody>
+
+    </table>
+
+</section>
+
+
+        <!-- ===================================== -->
+<!-- EMPLOYES -->
+<!-- ===================================== -->
+
+<section
+id="page-employees"
+class="page">
+
+    <div class="page-header">
+
+        <h2>
+            Gestion des Employés
+        </h2>
+
+        <button
+        class="btn-primary"
+        onclick="openModal('employeeModal')">
+
+            <i class="fa fa-plus"></i>
+
+            Nouvel Employé
+
+        </button>
+
+    </div>
+
+    <table class="data-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Matricule</th>
+
+                <th>Nom</th>
+
+                <th>Prénom</th>
+
+                <th>Fonction</th>
+
+                <th>Statut</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody
+        id="employeesTableBody">
+
+        </tbody>
+
+    </table>
+
+</section>
+
+
+<!-- ===================================== -->
+<!-- DOCUMENTS -->
+<!-- ===================================== -->
+
+<section
+id="page-documents"
+class="page">
+
+    <div class="page-header">
+
+        <h2>
+            Documents
+        </h2>
+
+        <button
+        class="btn-primary"
+        onclick="openModal('documentModal')">
+
+            <i class="fa fa-plus"></i>
+
+            Ajouter Document
+
+        </button>
+
+    </div>
+
+    <table class="data-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Nom fichier</th>
+
+                <th>Type</th>
+
+                <th>Expiration</th>
+
+                <th>Statut</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody
+        id="documentsTableBody">
+
+        </tbody>
+
+    </table>
+
+</section>
+
+
+<!-- ===================================== -->
+<!-- CLIENTS -->
+<!-- ===================================== -->
+
+<section
+id="page-clients"
+class="page">
+
+    <div class="page-header">
+
+        <h2>
+            Clients
+        </h2>
+
+        <button
+        class="btn-primary"
+        onclick="openModal('clientModal')">
+
+            <i class="fa fa-plus"></i>
+
+            Nouveau Client
+
+        </button>
+
+    </div>
+
+    <table class="data-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Société</th>
+
+                <th>Contact</th>
+
+                <th>Téléphone</th>
+
+                <th>Email</th>
+
+                <th>Aéronef</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody
+        id="clientsTableBody">
+
+        </tbody>
+
+    </table>
+
+</section>
+
+
+<!-- ===================================== -->
+<!-- STOCK -->
+<!-- ===================================== -->
+
+<section
+id="page-stock"
+class="page">
+
+    <div class="page-header">
+
+        <h2>
+            Stock Aéronautique
+        </h2>
+
+        <button
+        class="btn-primary"
+        onclick="openModal('pieceModal')">
+
+            <i class="fa fa-plus"></i>
+
+            Nouvelle Pièce
+
+        </button>
+
+    </div>
+
+    <table class="data-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Référence</th>
+
+                <th>Désignation</th>
+
+                <th>Catégorie</th>
+
+                <th>Stock</th>
+
+                <th>Alerte</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody
+        id="stockTableBody">
+
+        </tbody>
+
+    </table>
+
+</section>
+<!-- ===================================== -->
+<!-- MODAL EMPLOYE -->
+<!-- ===================================== -->
+
+<div id="employeeModal" class="modal">
+
+    <div class="modal-content">
+
+        <span
+        class="close"
+        onclick="closeModal('employeeModal')">
+        ×
+        </span>
+
+        <h2>Nouvel Employé</h2>
+
+        <form id="employeeForm">
+
+            <input
+            type="text"
+            name="matricule"
+            placeholder="Matricule">
+
+            <input
+            type="text"
+            name="nom"
+            placeholder="Nom">
+
+            <input
+            type="text"
+            name="prenom"
+            placeholder="Prénom">
+
+            <input
+            type="text"
+            name="fonction"
+            placeholder="Fonction">
+
+            <input
+            type="email"
+            name="email"
+            placeholder="Email">
+
+            <input
+            type="text"
+            name="telephone"
+            placeholder="Téléphone">
+
+            <button
+            type="button"
+            onclick="saveEmployee()">
+
+                Enregistrer
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================== -->
+<!-- MODAL CLIENT -->
+<!-- ===================================== -->
+
+<div id="clientModal" class="modal">
+
+    <div class="modal-content">
+
+        <span
+        class="close"
+        onclick="closeModal('clientModal')">
+        ×
+        </span>
+
+        <h2>Nouveau Client</h2>
+
+        <form id="clientForm">
+
+            <input
+            type="text"
+            name="nom_societe"
+            placeholder="Société">
+
+            <input
+            type="text"
+            name="contact_principal"
+            placeholder="Contact">
+
+            <input
+            type="text"
+            name="telephone"
+            placeholder="Téléphone">
+
+            <input
+            type="email"
+            name="email"
+            placeholder="Email">
+
+            <input
+            type="text"
+            name="type_aeronef"
+            placeholder="Type aéronef">
+
+            <button
+            type="button"
+            onclick="saveClient()">
+
+                Enregistrer
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================== -->
+<!-- MODAL DOCUMENT -->
+<!-- ===================================== -->
+
+<div id="documentModal" class="modal">
+
+    <div class="modal-content">
+
+        <span
+        class="close"
+        onclick="closeModal('documentModal')">
+        ×
+        </span>
+
+        <h2>Ajouter Document</h2>
+
+        <form
+        id="documentForm"
+        enctype="multipart/form-data">
+
+            <input
+            type="text"
+            name="type_document"
+            placeholder="Type document">
+
+            <input
+            type="date"
+            name="date_expiration">
+
+            <input
+            type="file"
+            name="file">
+
+            <textarea
+            name="commentaire"
+            placeholder="Commentaire">
+            </textarea>
+
+            <button
+            type="button"
+            onclick="saveDocument()">
+
+                Enregistrer
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================== -->
+<!-- MODAL PIECE -->
+<!-- ===================================== -->
+
+<div id="pieceModal" class="modal">
+
+    <div class="modal-content">
+
+        <span
+        class="close"
+        onclick="closeModal('pieceModal')">
+        ×
+        </span>
+
+        <h2>Nouvelle Pièce</h2>
+
+        <form id="pieceForm">
+
+            <input
+            type="text"
+            name="reference_piece"
+            placeholder="Référence">
+
+            <input
+            type="text"
+            name="designation"
+            placeholder="Désignation">
+
+            <input
+            type="text"
+            name="categorie"
+            placeholder="Catégorie">
+
+            <input
+            type="number"
+            name="quantite_stock"
+            placeholder="Stock">
+
+            <input
+            type="number"
+            name="stock_alerte"
+            placeholder="Alerte">
+
+            <input
+            type="number"
+            step="0.01"
+            name="prix_unitaire"
+            placeholder="Prix">
+
+            <button
+            type="button"
+            onclick="savePiece()">
+
+                Enregistrer
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+<!-- ===================================== -->
+<!-- MODAL MAINTENANCE -->
+<!-- ===================================== -->
+
+<div id="maintenanceModal" class="modal">
+
+    <div class="modal-content large">
+
+        <span
+        class="close"
+        onclick="closeModal('maintenanceModal')">
+        ×
+        </span>
+
+        <h2>
+            Nouvelle Maintenance
+        </h2>
+
+        <form id="maintenanceForm">
+
+            <input
+            type="text"
+            name="reference_fiche"
+            placeholder="Référence maintenance">
+
+            <input
+            type="text"
+            name="type_aeronef"
+            placeholder="Type aéronef">
+
+            <input
+            type="text"
+            name="immatriculation"
+            placeholder="Immatriculation">
+
+            <select
+            name="type_maintenance">
+
+                <option>
+                    Inspection 500h
+                </option>
+
+                <option>
+                    Inspection 1000h
+                </option>
+
+                <option>
+                    Contrôle moteur
+                </option>
+
+                <option>
+                    Maintenance corrective
+                </option>
+
+            </select>
+
+            <input
+            type="datetime-local"
+            name="date_intervention">
+
+            <input
+            type="number"
+            step="0.1"
+            name="duree_heures"
+            placeholder="Durée (h)">
+
+            <textarea
+            name="description"
+            placeholder="Description">
+            </textarea>
+
+            <button
+            type="button"
+            onclick="saveMaintenance()">
+
+                Enregistrer
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================== -->
+<!-- MODAL AGENDA -->
+<!-- ===================================== -->
+
+<div id="agendaModal" class="modal">
+
+    <div class="modal-content large">
+
+        <span
+        class="close"
+        onclick="closeModal('agendaModal')">
+        ×
+        </span>
+
+        <h2>
+            Nouvel Événement
+        </h2>
+
+        <form id="agendaForm">
+
+            <input
+            type="text"
+            name="titre"
+            placeholder="Titre">
+
+            <select
+            name="categorie">
+
+                <option value="REUNION_CLIENT">
+                    Réunion Client
+                </option>
+
+                <option value="REUNION_ADMIN">
+                    Réunion Administrative
+                </option>
+
+                <option value="MAINTENANCE">
+                    Maintenance
+                </option>
+
+                <option value="ACHAT_MATERIEL">
+                    Achat matériel
+                </option>
+
+                <option value="RECEPTION_MATERIEL">
+                    Réception matériel
+                </option>
+
+                <option value="PAIEMENT">
+                    Paiement
+                </option>
+
+            </select>
+
+            <input
+            type="datetime-local"
+            name="date_debut">
+
+            <input
+            type="datetime-local"
+            name="date_fin">
+
+            <input
+            type="text"
+            name="lieu"
+            placeholder="Lieu">
+
+            <input
+            type="text"
+            name="organisateur"
+            placeholder="Organisateur">
+
+            <input
+            type="text"
+            name="fournisseur"
+            placeholder="Fournisseur">
+
+            <input
+            type="text"
+            name="piece"
+            placeholder="Pièce / matériel">
+
+            <input
+            type="number"
+            name="quantite"
+            placeholder="Quantité">
+
+            <input
+            type="number"
+            step="0.01"
+            name="montant"
+            placeholder="Montant">
+
+            <input
+            type="text"
+            name="technicien"
+            placeholder="Technicien">
+
+            <input
+            type="text"
+            name="hangar"
+            placeholder="Hangar">
+
+            <textarea
+            name="description"
+            placeholder="Description">
+            </textarea>
+
+            <button
+            type="button"
+            onclick="saveAgenda()">
+
+                Enregistrer
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================== -->
+<!-- MODAL UTILISATEUR -->
+<!-- ===================================== -->
+
+<div id="userModal" class="modal">
+
+    <div class="modal-content">
+
+        <span
+        class="close"
+        onclick="closeModal('userModal')">
+        ×
+        </span>
+
+        <h2>
+            Nouvel Utilisateur
+        </h2>
+
+        <form id="userForm">
+
+            <input
+            type="text"
+            name="nom"
+            placeholder="Nom">
+
+            <input
+            type="text"
+            name="prenom"
+            placeholder="Prénom">
+
+            <input
+            type="text"
+            name="login"
+            placeholder="Login">
+
+            <input
+            type="email"
+            name="email"
+            placeholder="Email">
+
+            <input
+            type="password"
+            name="mot_de_passe"
+            placeholder="Mot de passe">
+
+            <select
+            name="role">
+
+                <option value="ADMIN">
+                    ADMIN
+                </option>
+
+                <option value="EDITEUR">
+                    EDITEUR
+                </option>
+
+                <option value="LECTEUR">
+                    LECTEUR
+                </option>
+
+            </select>
+
+            <button
+            type="button"
+            onclick="saveUser()">
+
+                Enregistrer
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================== -->
+<!-- MODAL SIGNATURE -->
+<!-- ===================================== -->
+
+<div id="signatureModal" class="modal">
+
+    <div class="modal-content">
+
+        <span
+        class="close"
+        onclick="closeModal('signatureModal')">
+        ×
+        </span>
+
+        <h2>
+            Signature électronique
+        </h2>
+
+        <input
+        type="hidden"
+        id="signDocumentId">
+
+        <input
+        type="text"
+        id="signataireNom"
+        placeholder="Nom signataire">
+
+        <input
+        type="text"
+        id="signataireFonction"
+        placeholder="Fonction">
+
+        <canvas
+        id="signatureCanvas"
+        width="600"
+        height="250">
+        </canvas>
+
+        <br>
+
+        <button
+        class="btn-primary"
+        onclick="signDocument()">
+
+            Signer
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================== -->
+<!-- SCRIPTS -->
+<!-- ===================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@5.0.3/dist/signature_pad.umd.min.js"></script>
+
+<script>
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
+
+        showPage("dashboard");
+
+        await loadDashboard();
+
+        loadUsers();
+        loadEmployees();
+        loadDocuments();
+        loadClients();
+        loadStock();
+        loadMaintenance();
+        loadAlerts();
+        loadAgenda();
+
+        initCalendar();
+
+    }
+);
+function showPage(page){
+
+    document
+    .querySelectorAll(".page")
+    .forEach(p=>{
+
+        p.classList.remove(
+            "active"
+        );
+
+    });
+
+    const current =
+        document.getElementById(
+            "page-"+page
+        );
+
+    if(current){
+
+        current.classList.add(
+            "active"
+        );
+
+    }
+
+    document
+    .querySelectorAll(
+        "#sidebar a"
+    )
+    .forEach(a=>{
+
+        a.classList.remove(
+            "active"
+        );
+
+    });
+
+    const nav =
+        document.getElementById(
+            "nav-"+page
+        );
+
+    if(nav){
+
+        nav.classList.add(
+            "active"
+        );
+
+    }
+}
+async function loadDashboard(){
+
+    const r =
+        await fetch(
+            "/api/dashboard/"
+        );
+
+    const d =
+        await r.json();
+
+    if(document.getElementById("kpiEmployees"))
+        document.getElementById(
+            "kpiEmployees"
+        ).innerText =
+            d.total_employes || 0;
+
+    if(document.getElementById("kpiDocuments"))
+        document.getElementById(
+            "kpiDocuments"
+        ).innerText =
+            d.total_documents || 0;
+
+    if(document.getElementById("kpiClients"))
+        document.getElementById(
+            "kpiClients"
+        ).innerText =
+            d.total_clients || 0;
+
+    if(document.getElementById("kpiMaintenance"))
+        document.getElementById(
+            "kpiMaintenance"
+        ).innerText =
+            d.total_maintenances || 0;
+
+    if(document.getElementById("kpiAlerts"))
+        document.getElementById(
+            "kpiAlerts"
+        ).innerText =
+            d.active_alerts || 0;
+}
+async function loadUsers(){
+
+    const r =
+        await fetch(
+            "/api/users/"
+        );
+
+    const data =
+        await r.json();
+
+    let html = "";
+
+    data.forEach(u=>{
+
+        html += `
+        <tr>
+
+            <td>${u.nom || ''}</td>
+
+            <td>${u.prenom || ''}</td>
+
+            <td>${u.login}</td>
+
+            <td>${u.role}</td>
+
+            <td>${u.statut}</td>
+
+        </tr>
+        `;
+
+    });
+
+    const body =
+        document.getElementById(
+            "usersTableBody"
+        );
+
+    if(body){
+
+        body.innerHTML = html;
+
+    }
+}
+async function loadEmployees(){
+
+    const r =
+        await fetch(
+            "/api/employees/"
+        );
+
+    const data =
+        await r.json();
+
+    let html="";
+
+    data.forEach(e=>{
+
+        html += `
+        <tr>
+
+            <td>${e.matricule}</td>
+
+            <td>${e.nom}</td>
+
+            <td>${e.prenom}</td>
+
+            <td>${e.fonction}</td>
+
+            <td>${e.statut}</td>
+
+        </tr>
+        `;
+
+    });
+
+    const body =
+        document.getElementById(
+            "employeesTableBody"
+        );
+
+    if(body){
+
+        body.innerHTML = html;
+
+    }
+}
+async function loadDocuments(){
+
+    const r =
+        await fetch(
+            "/api/documents/"
+        );
+
+    const data =
+        await r.json();
+
+    let html="";
+
+    data.forEach(d=>{
+
+        html += `
+        <tr>
+
+            <td>${d.nom_fichier}</td>
+
+            <td>${d.type_document}</td>
+
+            <td>${d.statut}</td>
+
+            <td>${d.date_expiration || ''}</td>
+
+        </tr>
+        `;
+
+    });
+
+    const body =
+        document.getElementById(
+            "documentsTableBody"
+        );
+
+    if(body){
+
+        body.innerHTML = html;
+
+    }
+}
+async function loadClients(){
+
+    const r =
+        await fetch(
+            "/api/clients/"
+        );
+
+    const data =
+        await r.json();
+
+    let html="";
+
+    data.forEach(c=>{
+
+        html += `
+        <tr>
+
+            <td>${c.nom_societe}</td>
+
+            <td>${c.contact_principal}</td>
+
+            <td>${c.telephone}</td>
+
+            <td>${c.email}</td>
+
+            <td>${c.type_aeronef}</td>
+
+        </tr>
+        `;
+
+    });
+
+    const body =
+        document.getElementById(
+            "clientsTableBody"
+        );
+
+    if(body){
+
+        body.innerHTML = html;
+
+    }
+}
+async function loadStock(){
+
+    const r =
+        await fetch(
+            "/api/stock/pieces"
+        );
+
+    const data =
+        await r.json();
+
+    let html="";
+
+    data.forEach(p=>{
+
+        html += `
+        <tr>
+
+            <td>${p.reference_piece}</td>
+
+            <td>${p.designation}</td>
+
+            <td>${p.categorie}</td>
+
+            <td>${p.quantite_stock}</td>
+
+            <td>${p.stock_alerte}</td>
+
+        </tr>
+        `;
+
+    });
+
+    const body =
+        document.getElementById(
+            "stockTableBody"
+        );
+
+    if(body){
+
+        body.innerHTML = html;
+
+    }
+}
+async function loadMaintenance(){
+
+    const r =
+        await fetch(
+            "/api/maintenance/"
+        );
+
+    const data =
+        await r.json();
+
+    let html="";
+
+    data.forEach(m=>{
+
+        html += `
+        <tr>
+
+            <td>${m.reference_fiche}</td>
+
+            <td>${m.type_aeronef}</td>
+
+            <td>${m.immatriculation}</td>
+
+            <td>${m.type_maintenance}</td>
+
+            <td>${m.statut}</td>
+
+        </tr>
+        `;
+
+    });
+
+    const body =
+        document.getElementById(
+            "maintenanceTableBody"
+        );
+
+    if(body){
+
+        body.innerHTML = html;
+
+    }
+}
+async function loadAlerts(){
+
+    const r =
+        await fetch(
+            "/api/alerts/"
+        );
+
+    const data =
+        await r.json();
+
+    let html="";
+
+    data.forEach(a=>{
+
+        html += `
+        <tr>
+
+            <td>${a.niveau}</td>
+
+            <td>${a.titre}</td>
+
+            <td>${a.message}</td>
+
+        </tr>
+        `;
+
+    });
+
+    const body =
+        document.getElementById(
+            "alertsTableBody"
+        );
+
+    if(body){
+
+        body.innerHTML = html;
+
+    }
+}
+async function loadAgenda(){
+
+    const r =
+        await fetch(
+            "/api/agenda/"
+        );
+
+    const data =
+        await r.json();
+
+    let html="";
+
+    data.forEach(e=>{
+
+        html += `
+        <tr>
+
+            <td>${e.date_debut}</td>
+
+            <td>${e.titre}</td>
+
+            <td>${e.categorie}</td>
+
+            <td>${e.statut}</td>
+
+        </tr>
+        `;
+
+    });
+
+    const body =
+        document.getElementById(
+            "agendaTableBody"
+        );
+
+    if(body){
+
+        body.innerHTML = html;
+
+    }
+}
+async function initCalendar(){
+
+    const calendarEl =
+        document.getElementById(
+            "calendar"
+        );
+
+    if(!calendarEl)
+        return;
+
+    const r =
+        await fetch(
+            "/api/agenda/calendar"
+        );
+
+    const events =
+        await r.json();
+
+    const calendar =
+        new FullCalendar.Calendar(
+            calendarEl,
+            {
+
+                initialView:
+                    "dayGridMonth",
+
+                locale:
+                    "fr",
+
+                events:
+                    events
+
+            }
+        );
+
+    calendar.render();
+}
+function openModal(id){
+
+    document
+    .getElementById(id)
+    .style.display =
+        "flex";
+
+}
+
+function closeModal(id){
+
+    document
+    .getElementById(id)
+    .style.display =
+        "none";
+
+}
+async function saveClient(){
+
+    const form =
+        document.getElementById(
+            "clientForm"
+        );
+
+    const data =
+        new FormData(form);
+
+    const r = await fetch(
+
+        "/api/clients/add",
+
+        {
+            method:"POST",
+            body:data
+        }
+
+    );
+
+    const res =
+        await r.json();
+
+    if(res.success){
+
+        alert(
+            "Client ajouté"
+        );
+
+        loadClients();
+
+        closeModal(
+            "clientModal"
+        );
+
+    }
+}
+async function saveEmployee(){
+
+    const form =
+        document.getElementById(
+            "employeeForm"
+        );
+
+    const data =
+        new FormData(form);
+
+    const r = await fetch(
+
+        "/api/employees/add",
+
+        {
+            method:"POST",
+            body:data
+        }
+
+    );
+
+    const res =
+        await r.json();
+
+    if(res.success){
+
+        alert(
+            "Employé ajouté"
+        );
+
+        loadEmployees();
+
+        closeModal(
+            "employeeModal"
+        );
+
+    }
+}
+async function saveDocument(){
+
+    const form =
+        document.getElementById(
+            "documentForm"
+        );
+
+    const data =
+        new FormData(form);
+
+    const r = await fetch(
+
+        "/api/documents/add",
+
+        {
+            method:"POST",
+            body:data
+        }
+
+    );
+
+    const res =
+        await r.json();
+
+    if(res.success){
+
+        alert(
+            "Document ajouté"
+        );
+
+        loadDocuments();
+
+        closeModal(
+            "documentModal"
+        );
+
+    }
+}
+async function savePiece(){
+
+    const form =
+        document.getElementById(
+            "pieceForm"
+        );
+
+    const data =
+        new FormData(form);
+
+    const r = await fetch(
+
+        "/api/stock/piece/add",
+
+        {
+            method:"POST",
+            body:data
+        }
+
+    );
+
+    const res =
+        await r.json();
+
+    if(res.success){
+
+        alert(
+            "Pièce ajoutée"
+        );
+
+        loadStock();
+
+        closeModal(
+            "pieceModal"
+        );
+
+    }
+}
+async function saveMaintenance(){
+
+    const form =
+        document.getElementById(
+            "maintenanceForm"
+        );
+
+    const data =
+        new FormData(form);
+
+    const r = await fetch(
+
+        "/api/maintenance/add",
+
+        {
+            method:"POST",
+            body:data
+        }
+
+    );
+
+    const res =
+        await r.json();
+
+    if(res.success){
+
+        alert(
+            "Maintenance créée"
+        );
+
+        loadMaintenance();
+
+        loadAgenda();
+
+        closeModal(
+            "maintenanceModal"
+        );
+
+    }
+}
+async function saveAgenda(){
+
+    const form =
+        document.getElementById(
+            "agendaForm"
+        );
+
+    const data =
+        new FormData(form);
+
+    const r = await fetch(
+
+        "/api/agenda/add",
+
+        {
+            method:"POST",
+            body:data
+        }
+
+    );
+
+    const res =
+        await r.json();
+
+    if(res.success){
+
+        alert(
+            "Événement créé"
+        );
+
+        loadAgenda();
+
+        initCalendar();
+
+        closeModal(
+            "agendaModal"
+        );
+
+    }
+}
+async function saveUser(){
+
+    const form =
+        document.getElementById(
+            "userForm"
+        );
+
+    const data =
+        new FormData(form);
+
+    const r = await fetch(
+
+        "/api/users/add",
+
+        {
+            method:"POST",
+            body:data
+        }
+
+    );
+
+    const res =
+        await r.json();
+
+    if(res.success){
+
+        alert(
+            "Utilisateur créé"
+        );
+
+        loadUsers();
+
+        closeModal(
+            "userModal"
+        );
+
+    }
+}
+async function uploadOCR(){
+
+    const fileInput =
+        document.getElementById(
+            "ocrFile"
+        );
+
+    const data =
+        new FormData();
+
+    data.append(
+        "file",
+        fileInput.files[0]
+    );
+
+    const r = await fetch(
+
+        "/api/ocr/analyse",
+
+        {
+            method:"POST",
+            body:data
+        }
+
+    );
+
+    const res =
+        await r.json();
+
+    document.getElementById(
+        "ocrResult"
+    ).innerHTML = `
+
+        <h3>Résultat OCR</h3>
+
+        <p>
+            <b>Matricule :</b>
+            ${res.matricule || ''}
+        </p>
+
+        <p>
+            <b>Licence :</b>
+            ${res.licence || ''}
+        </p>
+
+        <p>
+            <b>Expiration :</b>
+            ${res.expiration || ''}
+        </p>
+
+        <textarea
+        style="width:100%;height:250px">
+${res.texte || ''}
+        </textarea>
+
+    `;
+}
+async function signDocument(){
+
+    const data = {
+
+        id_document:
+            document.getElementById(
+                "signDocumentId"
+            ).value,
+
+        nom_signataire:
+            document.getElementById(
+                "signataireNom"
+            ).value,
+
+        fonction_signataire:
+            document.getElementById(
+                "signataireFonction"
+            ).value,
+
+        signature_base64:
+            signaturePad
+            .toDataURL()
+
+    };
+
+    const r = await fetch(
+
+        "/api/signatures/document/sign",
+
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":
+                "application/json"
+            },
+
+            body:
+                JSON.stringify(data)
+
+        }
+
+    );
+
+    const res =
+        await r.json();
+
+    if(res.success){
+
+        alert(
+            "Document signé"
+        );
+
+        closeModal(
+            "signatureModal"
+        );
+
+        loadDocuments();
+
+    }
+}
+
+
+</script>
+
+</main>
+
+</div>
+
+</body>
+
+</html>

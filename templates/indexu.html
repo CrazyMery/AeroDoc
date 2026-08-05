@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AeroDoc Python — Digitalisation Documentaire Aéronautique</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f5f5f3;color:#1a1a1a;height:100vh;overflow:hidden}
+:root{--sidebar:220px;--header:56px;--blue:#185FA5;--blue-light:#E6F1FB;--green:#3B6D11;--green-light:#EAF3DE;--amber:#854F0B;--amber-light:#FAEEDA;--red:#A32D2D;--red-light:#FCEBEB;--border:#e5e5e3;--bg:#fff;--bg2:#f5f5f3;--text:#1a1a1a;--text2:#6b6b6b;--text3:#9b9b9b}
+#app{display:flex;height:100vh;overflow:hidden}
+#sidebar{width:var(--sidebar);background:var(--bg);border-right:0.5px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+#sidebar .logo{padding:1rem 1.25rem;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:8px}
+#sidebar .logo .logoname{font-size:15px;font-weight:500}
+#sidebar .logo small{font-size:11px;color:var(--text2);display:block}
+nav a{display:flex;align-items:center;gap:10px;padding:10px 1.25rem;font-size:13px;color:var(--text2);cursor:pointer;border-left:2px solid transparent;text-decoration:none}
+nav a:hover{background:var(--bg2);color:var(--text)}
+nav a.active{color:var(--blue);border-left-color:var(--blue);background:var(--blue-light)}
+.nav-section{padding:1.25rem 1.25rem .5rem;font-size:11px;font-weight:500;color:var(--text3);letter-spacing:.05em;text-transform:uppercase}
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#topbar{height:var(--header);background:var(--bg);border-bottom:0.5px solid var(--border);display:flex;align-items:center;padding:0 1.5rem;gap:1rem}
+#topbar h1{font-size:16px;font-weight:500;flex:1}
+.alert-badge{font-size:12px;background:var(--red-light);color:var(--red);border-radius:8px;padding:3px 10px;display:flex;align-items:center;gap:4px;border:none}
+#content{flex:1;overflow-y:auto;padding:1.5rem}
+.page{display:none}
+.page.active{display:block}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:1.5rem}
+.kpi{background:var(--bg2);border-radius:8px;padding:1rem;text-align:center}
+.kpi .val{font-size:26px;font-weight:500;line-height:1}
+.kpi .lbl{font-size:12px;color:var(--text2);margin-top:4px}
+.kpi.danger .val{color:var(--red)}
+.kpi.warn .val{color:var(--amber)}
+.kpi.ok .val{color:var(--green)}
+.kpi.info .val{color:var(--blue)}
+.card{background:var(--bg);border:0.5px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+.card-title{font-size:14px;font-weight:500;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+table{width:100%;font-size:13px;border-collapse:collapse}
+th{font-size:11px;font-weight:500;color:var(--text2);text-align:left;padding:6px 10px;border-bottom:0.5px solid var(--border);text-transform:uppercase;letter-spacing:.04em}
+td{padding:8px 10px;border-bottom:0.5px solid var(--border)}
+tr:hover td{background:var(--bg2)}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 8px;border-radius:999px}
+.pill.expired{background:var(--red-light);color:var(--red)}
+.pill.warn{background:var(--amber-light);color:var(--amber)}
+.pill.valid{background:var(--green-light);color:var(--green)}
+.pill.renew{background:var(--blue-light);color:var(--blue)}
+.pill.neutral{background:var(--bg2);color:var(--text2);border:0.5px solid var(--border)}
+.btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:7px 14px;border-radius:8px;cursor:pointer;border:0.5px solid var(--border);background:var(--bg);color:var(--text);font-family:inherit}
+.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group label{font-size:12px;color:var(--text2)}
+.form-group input,.form-group select{font-size:13px;padding:7px 10px;border:0.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:inherit}
+.chart-wrap{position:relative;height:220px;width:100%}
+</style>
+</head>
+<body>
+<div id="app">
+  <aside id="sidebar">
+    <div class="logo">
+      <i class="ti ti-plane" style="font-size:22px;color:var(--blue)"></i>
+      <div><div class="logoname">AeroDoc Python</div><small>Maintenance Aéronautique</small></div>
+    </div>
+    <nav>
+      <div class="nav-section">Principal</div>
+      <a class="active" onclick="showPage('dashboard')" id="nav-dashboard"><i class="ti ti-layout-dashboard"></i> Tableau de bord</a>
+      <a onclick="showPage('employees')" id="nav-employees"><i class="ti ti-users"></i> Employés</a>
+      <a onclick="showPage('alerts')" id="nav-alerts"><i class="ti ti-bell"></i> Alertes <span style="margin-left:auto;background:var(--red-light);color:var(--red);font-size:11px;padding:1px 6px;border-radius:999px">{{ dashboard.active_alerts }}</span></a>
+      <div class="nav-section">Gestion</div>
+      <a onclick="showPage('docs')" id="nav-docs"><i class="ti ti-files"></i> Documents</a>
+      <a onclick="showPage('add')" id="nav-add"><i class="ti ti-plus"></i> Ajouter document</a>
+    </nav>
+  </aside>
+
+  <div id="main">
+    <div id="topbar">
+      <h1 id="page-title">Tableau de bord</h1>
+      <button class="alert-badge" onclick="showPage('alerts')">
+        <i class="ti ti-alert-triangle"></i> {{ dashboard.active_alerts }} alertes actives
+      </button>
+      <span style="font-size:13px;color:var(--text2)">Python / Flask / SQLite</span>
+    </div>
+
+    <div id="content">
+      <div class="page active" id="page-dashboard">
+        <div class="kpi-grid">
+          <div class="kpi info"><div class="val">{{ dashboard.total_employees }}</div><div class="lbl">Employés</div></div>
+          <div class="kpi info"><div class="val">{{ dashboard.total_documents }}</div><div class="lbl">Documents</div></div>
+          <div class="kpi ok"><div class="val">{{ dashboard.valid_documents }}</div><div class="lbl">Documents valides</div></div>
+          <div class="kpi warn"><div class="val">{{ dashboard.renew_documents }}</div><div class="lbl">À renouveler</div></div>
+          <div class="kpi danger"><div class="val">{{ dashboard.expired_documents }}</div><div class="lbl">Expirés</div></div>
+          <div class="kpi danger"><div class="val">{{ dashboard.missing_documents }}</div><div class="lbl">Manquants</div></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+          <div class="card">
+            <div class="card-title"><i class="ti ti-chart-bar"></i> Qualifications par aéronef</div>
+            <div class="chart-wrap"><canvas id="chartQual"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="ti ti-chart-pie"></i> Conformité documentaire</div>
+            <div class="chart-wrap"><canvas id="chartConf"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="ti ti-alert-triangle" style="color:var(--red)"></i> Alertes actives</div>
+          <table>
+            <thead><tr><th>Employé</th><th>Document</th><th>Expiration</th><th>Jours restants</th><th>Statut</th></tr></thead>
+            <tbody>
+              {% for alert in alerts %}
+              <tr>
+                <td>{{ alert.prenom }} {{ alert.nom }}</td>
+                <td>{{ alert.type_document }}</td>
+                <td>{{ alert.date_expiration }}</td>
+                <td>
+                  {% if alert.jours_restants < 0 %}
+                    Expiré depuis {{ -alert.jours_restants }} jours
+                  {% else %}
+                    {{ alert.jours_restants }} jours
+                  {% endif %}
+                </td>
+                <td><span class="pill {{ alert.status_class }}">{{ alert.status_label }}</span></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="page" id="page-employees">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-users"></i> Employés</div>
+          <table>
+            <thead><tr><th>Matricule</th><th>Nom</th><th>Fonction</th><th>Nationalité</th><th>Documents</th></tr></thead>
+            <tbody>
+              {% for e in employees %}
+              <tr>
+                <td>{{ e.matricule }}</td>
+                <td>{{ e.prenom }} {{ e.nom }}</td>
+                <td>{{ e.fonction }}</td>
+                <td>{{ e.nationalite }}</td>
+                <td>{{ e.document_count }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="page" id="page-alerts">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-bell"></i> Toutes les alertes générées par Python</div>
+          <p style="font-size:13px;color:var(--text2);margin-bottom:1rem">
+            Règle : date d'expiration - 2 mois &lt;= aujourd'hui.
+          </p>
+          <table>
+            <thead><tr><th>Date alerte</th><th>Employé</th><th>Document</th><th>Expiration</th><th>Statut</th><th>Traitement</th></tr></thead>
+            <tbody>
+              {% for alert in alerts %}
+              <tr>
+                <td>{{ today }}</td>
+                <td>{{ alert.prenom }} {{ alert.nom }}</td>
+                <td>{{ alert.type_document }}</td>
+                <td>{{ alert.date_expiration }}</td>
+                <td><span class="pill {{ alert.status_class }}">{{ alert.status_label }}</span></td>
+                <td><span class="pill neutral">Non traité</span></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="page" id="page-docs">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-files"></i> Documents</div>
+          <table>
+            <thead><tr><th>Fichier</th><th>Type</th><th>Employé</th><th>Dépôt</th><th>Expiration</th><th>Statut</th></tr></thead>
+            <tbody>
+              {% for d in documents %}
+              <tr>
+                <td>{{ d.nom_fichier }}</td>
+                <td>{{ d.type_document }}</td>
+                <td>{{ d.prenom }} {{ d.nom }}</td>
+                <td>{{ d.date_depot }}</td>
+                <td>{{ d.date_expiration }}</td>
+                <td><span class="pill {{ d.status_class }}">{{ d.status_label }}</span></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="page" id="page-add">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-plus"></i> Ajouter un document</div>
+          <form method="post" action="/documents/add">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Employé</label>
+                <select name="employee_id" required>
+                  {% for e in employees %}
+                  <option value="{{ e.id }}">{{ e.prenom }} {{ e.nom }} — {{ e.matricule }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Type document</label>
+                <input name="type_document" placeholder="Licence, certificat médical..." required>
+              </div>
+              <div class="form-group">
+                <label>Nom fichier</label>
+                <input name="nom_fichier" placeholder="document.pdf" required>
+              </div>
+              <div class="form-group">
+                <label>Date dépôt</label>
+                <input type="date" name="date_depot">
+              </div>
+              <div class="form-group">
+                <label>Date expiration</label>
+                <input type="date" name="date_expiration">
+              </div>
+            </div>
+            <div style="margin-top:1rem">
+              <button class="btn primary" type="submit">Enregistrer</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function showPage(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.getElementById('nav-'+p).classList.add('active');
+
+  const titles = {
+    dashboard:'Tableau de bord',
+    employees:'Employés',
+    alerts:'Alertes',
+    docs:'Documents',
+    add:'Ajouter document'
+  };
+  document.getElementById('page-title').textContent = titles[p] || p;
+}
+
+const aircraftLabels = {{ dashboard.aircraft_counts.keys()|list|tojson }};
+const aircraftValues = {{ dashboard.aircraft_counts.values()|list|tojson }};
+
+new Chart(document.getElementById('chartQual'),{
+  type:'bar',
+  data:{labels:aircraftLabels,datasets:[{label:'Qualifications',data:aircraftValues,borderWidth:0}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}}}
+});
+
+new Chart(document.getElementById('chartConf'),{
+  type:'doughnut',
+  data:{
+    labels:['Valides','À renouveler','Expirés','Manquants'],
+    datasets:[{data:[
+      {{ dashboard.valid_documents }},
+      {{ dashboard.renew_documents }},
+      {{ dashboard.expired_documents }},
+      {{ dashboard.missing_documents }}
+    ],borderWidth:0}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom'}}}
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+# Environnement Python
+venv/
+.venv/
+env/
+
+# Cache Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Variables confidentielles
+.env
+.env.*
+!.env.example
+
+# Base de données locale
+*.db
+*.sqlite
+*.sqlite3
+
+# Fichiers envoyés et générés
+uploads/*
+documents_signes/*
+signatures/*
+
+# Conserver les dossiers vides
+!uploads/.gitkeep
+!documents_signes/.gitkeep
+!signatures/.gitkeep
+
+# Installateurs et exécutables
+*.exe
+
+# IDE
+.vscode/
+.idea/
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+
+# Fichiers temporaires
+*.tmp
+*.temp
