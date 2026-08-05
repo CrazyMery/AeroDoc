@@ -471,8 +471,82 @@ def delete_event(id_evenement):
 
 @agenda_bp.route("/calendar", methods=["GET"])
 @login_required
+@agenda_bp.route("/calendar", methods=["GET"])
+@login_required
 def calendar_events():
+    rows = fetch_all("""
+        SELECT
+            a.id_evenement,
+            a.titre,
+            a.categorie,
+            a.date_debut,
+            a.date_fin,
+            a.statut,
+            a.lieu,
+            a.organisateur,
+            a.id_client,
+            c.nom_societe
+        FROM agenda_evenements a
+        LEFT JOIN clients c
+            ON c.id_client = a.id_client
+        WHERE a.date_debut IS NOT NULL
+          AND a.date_debut <> '0000-00-00 00:00:00'
+        ORDER BY a.date_debut ASC
+    """)
 
+    colors = {
+        "REUNION_CLIENT": "#2563eb",
+        "REUNION_ADMIN": "#64748b",
+        "MAINTENANCE": "#dc2626",
+        "COMMANDE_MATERIEL": "#ca8a04",
+        "RECEPTION_MATERIEL": "#16a34a",
+        "PAIEMENT": "#9333ea",
+        "AUDIT": "#ea580c",
+        "FORMATION": "#0891b2",
+        "LIVRAISON": "#4f46e5",
+        "AUTRE": "#6b7280"
+    }
+
+    events = []
+
+    for row in rows:
+        start = row.get("date_debut")
+        end = row.get("date_fin")
+
+        if not start:
+            continue
+
+        # FullCalendar attend de préférence une date ISO 8601
+        if hasattr(start, "isoformat"):
+            start = start.isoformat()
+
+        if end and hasattr(end, "isoformat"):
+            end = end.isoformat()
+
+        events.append({
+            "id": str(row["id_evenement"]),
+            "title": row["titre"] or "Événement",
+            "start": start,
+            "end": end or None,
+            "backgroundColor": colors.get(
+                row["categorie"],
+                "#6b7280"
+            ),
+            "borderColor": colors.get(
+                row["categorie"],
+                "#6b7280"
+            ),
+            "textColor": "#ffffff",
+            "extendedProps": {
+                "categorie": row.get("categorie"),
+                "statut": row.get("statut"),
+                "lieu": row.get("lieu"),
+                "organisateur": row.get("organisateur"),
+                "client": row.get("nom_societe")
+            }
+        })
+
+    return jsonify(events)
     rows = fetch_all("""
         SELECT
             a.id_evenement,
