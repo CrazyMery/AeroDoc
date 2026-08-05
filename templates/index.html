@@ -1127,7 +1127,218 @@ class="page">
 
 </section>
 
+<!-- ===================================== -->
+<!-- MAINTENANCE -->
+<!-- ===================================== -->
 
+<section id="page-maintenance" class="page">
+
+    <div class="page-header">
+        <h2>Gestion de la Maintenance</h2>
+
+        <button
+            type="button"
+            class="btn-primary"
+            onclick="openModal('maintenanceModal')"
+        >
+            <i class="fa-solid fa-plus"></i>
+            Nouvelle Maintenance
+        </button>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Référence</th>
+                <th>Aéronef</th>
+                <th>Immatriculation</th>
+                <th>Type de maintenance</th>
+                <th>Statut</th>
+            </tr>
+        </thead>
+
+        <tbody id="maintenanceTableBody"></tbody>
+    </table>
+
+</section>
+
+
+<!-- ===================================== -->
+<!-- AGENDA -->
+<!-- ===================================== -->
+
+<section id="page-agenda" class="page">
+
+    <div class="page-header">
+        <h2>Agenda</h2>
+
+        <button
+            type="button"
+            class="btn-primary"
+            onclick="openModal('agendaModal')"
+        >
+            <i class="fa-solid fa-calendar-plus"></i>
+            Nouvel Événement
+        </button>
+    </div>
+
+    <div id="calendar"></div>
+
+    <div class="card">
+        <div class="card-title">
+            <i class="fa-solid fa-list"></i>
+            Liste des événements
+        </div>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Titre</th>
+                    <th>Catégorie</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+
+            <tbody id="agendaTableBody"></tbody>
+        </table>
+    </div>
+
+</section>
+
+
+<!-- ===================================== -->
+<!-- OCR -->
+<!-- ===================================== -->
+
+<section id="page-ocr" class="page">
+
+    <div class="page-header">
+        <div>
+            <h2>Reconnaissance OCR</h2>
+            <p>
+                Analyse automatique d’un document aéronautique.
+            </p>
+        </div>
+    </div>
+
+    <div class="card">
+
+        <div class="card-title">
+            <i class="fa-solid fa-file-image"></i>
+            Importer un document
+        </div>
+
+        <div class="form-group">
+            <label for="ocrFile">
+                Sélectionner une image ou un PDF
+            </label>
+
+            <input
+                id="ocrFile"
+                type="file"
+                accept=".png,.jpg,.jpeg,.pdf"
+            >
+        </div>
+
+        <div class="form-actions">
+            <button
+                type="button"
+                class="btn-primary"
+                onclick="uploadOCR()"
+            >
+                <i class="fa-solid fa-camera"></i>
+                Lancer l’analyse OCR
+            </button>
+        </div>
+
+    </div>
+
+    <div id="ocrResult" class="card">
+        <div class="card-title">
+            Résultat OCR
+        </div>
+
+        <p>
+            Aucun document analysé.
+        </p>
+    </div>
+
+</section>
+
+
+<!-- ===================================== -->
+<!-- SIGNATURES -->
+<!-- ===================================== -->
+
+<section id="page-signatures" class="page">
+
+    <div class="page-header">
+        <div>
+            <h2>Signatures électroniques</h2>
+            <p>
+                Signature et validation des documents.
+            </p>
+        </div>
+
+        <button
+            type="button"
+            class="btn-primary"
+            onclick="openModal('signatureModal')"
+        >
+            <i class="fa-solid fa-signature"></i>
+            Nouvelle Signature
+        </button>
+    </div>
+
+    <div class="card">
+        <div class="card-title">
+            <i class="fa-solid fa-pen-nib"></i>
+            Gestion des signatures
+        </div>
+
+        <p>
+            Sélectionnez un document puis ajoutez la signature du responsable.
+        </p>
+    </div>
+
+</section>
+
+
+<!-- ===================================== -->
+<!-- UTILISATEURS -->
+<!-- ===================================== -->
+
+<section id="page-users" class="page">
+
+    <div class="page-header">
+        <h2>Gestion des Utilisateurs</h2>
+
+        <button
+            type="button"
+            class="btn-primary"
+            onclick="openModal('userModal')"
+        >
+            <i class="fa-solid fa-user-plus"></i>
+            Nouvel Utilisateur
+        </button>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Identifiant</th>
+                <th>Rôle</th>
+                <th>Statut</th>
+            </tr>
+        </thead>
+
+        <tbody id="usersTableBody"></tbody>
+    </table>
+
+</section>
 
 <!-- ===================================== -->
 <!-- MODAL EMPLOYE -->
