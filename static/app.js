@@ -68,7 +68,8 @@ function showPage(pageName) {
         agenda: "Agenda",
         ocr: "OCR",
         signatures: "Signatures",
-        users: "Gestion des utilisateurs"
+        users: "Gestion des utilisateurs",
+        alerts: "Centre des alertes"
     };
 
     const title = document.getElementById("page-title");
@@ -76,6 +77,9 @@ function showPage(pageName) {
     if (title) {
         title.textContent = titles[pageName] || "AeroDoc";
     }
+    if (pageName === "alerts") {
+    loadAlerts();
+}
 }
 /* =====================================================
    TABLEAU DE BORD
@@ -823,43 +827,318 @@ async function loadMaintenance(){
 
     }
 }
-async function loadAlerts(){
+let allAlerts = [];
 
-    const r =
-        await fetch(
-            "/api/alerts/"
+
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+
+function normalizeAlertLevel(level) {
+    return String(level || "INFO").toUpperCase();
+}
+
+
+function normalizeAlertStatus(status) {
+    return String(status || "OUVERTE").toUpperCase();
+}
+
+
+function formatAlertDate(value) {
+    if (!value) {
+        return "Date non renseignée";
+    }
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return value;
+    }
+
+    return new Intl.DateTimeFormat(
+        "fr-FR",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    ).format(date);
+}
+
+
+function getAlertIcon(level) {
+    const icons = {
+        CRITIQUE: "fa-circle-exclamation",
+        ATTENTION: "fa-triangle-exclamation",
+        INFO: "fa-circle-info"
+    };
+
+    return icons[level] || "fa-bell";
+}
+
+
+function updateAlertCounters(alerts) {
+    const opened = alerts.filter(
+        alert =>
+            normalizeAlertStatus(alert.statut) === "OUVERTE"
+    );
+
+    const critical = opened.filter(
+        alert =>
+            normalizeAlertLevel(alert.niveau) === "CRITIQUE"
+    ).length;
+
+    const warning = opened.filter(
+        alert =>
+            normalizeAlertLevel(alert.niveau) === "ATTENTION"
+    ).length;
+
+    const info = opened.filter(
+        alert =>
+            normalizeAlertLevel(alert.niveau) === "INFO"
+    ).length;
+
+    setDashboardValue("criticalAlertsCount", critical);
+    setDashboardValue("warningAlertsCount", warning);
+    setDashboardValue("infoAlertsCount", info);
+    setDashboardValue("openAlertsCount", opened.length);
+
+    setDashboardValue("topAlertCount", opened.length);
+    setDashboardValue("sidebarAlertCount", opened.length);
+    setDashboardValue("kpiAlerts", opened.length);
+
+    const topButton =
+        document.getElementById("topAlertButton");
+
+    if (topButton) {
+        topButton.classList.toggle(
+            "has-alerts",
+            opened.length > 0
         );
+    }
+}
 
-    const data =
-        await r.json();
 
-    let html="";
+function renderAlerts(alerts) {
+    const container =
+        document.getElementById("alertsList");
 
-    data.forEach(a=>{
+    if (!container) {
+        return;
+    }
 
-        html += `
-        <tr>
+    if (!alerts.length) {
+        container.innerHTML = `
+            <div class="alerts-empty">
+                <div class="alerts-empty-icon">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
 
-            <td>${a.niveau}</td>
+                <h3>Aucune alerte trouvée</h3>
 
-            <td>${a.titre}</td>
-
-            <td>${a.message}</td>
-
-        </tr>
+                <p>
+                    Aucun élément ne correspond aux filtres sélectionnés.
+                </p>
+            </div>
         `;
 
+        return;
+    }
+
+    container.innerHTML = alerts
+        .map(alert => {
+            const level =
+                normalizeAlertLevel(alert.niveau);
+
+            const status =
+                normalizeAlertStatus(alert.statut);
+
+            return `
+                <article
+                    class="alert-item alert-${level.toLowerCase()}"
+                    data-level="${escapeHtml(level)}"
+                    data-status="${escapeHtml(status)}"
+                >
+                    <div class="alert-item-icon">
+                        <i class="fa-solid ${getAlertIcon(level)}"></i>
+                    </div>
+
+                    <div class="alert-item-content">
+
+                        <div class="alert-item-header">
+                            <div>
+                                <span class="alert-level-badge">
+                                    ${escapeHtml(level)}
+                                </span>
+
+                                <span class="alert-status-badge status-${status.toLowerCase()}">
+                                    ${escapeHtml(status)}
+                                </span>
+                            </div>
+
+                            <time>
+                                <i class="fa-regular fa-clock"></i>
+                                ${escapeHtml(
+                                    formatAlertDate(
+                                        alert.date_creation
+                                    )
+                                )}
+                            </time>
+                        </div>
+
+                        <h3>
+                            ${escapeHtml(
+                                alert.titre || "Alerte"
+                            )}
+                        </h3>
+
+                        <p>
+                            ${escapeHtml(
+                                alert.message ||
+                                "Aucun détail disponible."
+                            )}
+                        </p>
+
+                    </div>
+                </article>
+            `;
+        })
+        .join("");
+}
+
+
+function filterAlerts() {
+    const searchValue =
+        document
+            .getElementById("alertSearchInput")
+            ?.value
+            .trim()
+            .toLowerCase() || "";
+
+    const levelValue =
+        document
+            .getElementById("alertLevelFilter")
+            ?.value || "";
+
+    const statusValue =
+        document
+            .getElementById("alertStatusFilter")
+            ?.value || "";
+
+    const filtered = allAlerts.filter(alert => {
+        const level =
+            normalizeAlertLevel(alert.niveau);
+
+        const status =
+            normalizeAlertStatus(alert.statut);
+
+        const searchableText = `
+            ${alert.titre || ""}
+            ${alert.message || ""}
+            ${level}
+            ${status}
+        `.toLowerCase();
+
+        const matchesSearch =
+            !searchValue ||
+            searchableText.includes(searchValue);
+
+        const matchesLevel =
+            !levelValue ||
+            level === levelValue;
+
+        const matchesStatus =
+            !statusValue ||
+            status === statusValue;
+
+        return (
+            matchesSearch &&
+            matchesLevel &&
+            matchesStatus
+        );
     });
 
-    const body =
-        document.getElementById(
-            "alertsTableBody"
+    renderAlerts(filtered);
+}
+
+
+async function loadAlerts() {
+    const container =
+        document.getElementById("alertsList");
+
+    if (container) {
+        container.innerHTML = `
+            <div class="alerts-loading">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                Chargement des alertes...
+            </div>
+        `;
+    }
+
+    try {
+        const response = await fetch("/api/alerts/");
+
+        if (!response.ok) {
+            throw new Error(
+                `Erreur HTTP ${response.status}`
+            );
+        }
+
+        const data = await response.json();
+
+        allAlerts = Array.isArray(data)
+            ? data
+            : [];
+
+        updateAlertCounters(allAlerts);
+        renderAlerts(allAlerts);
+
+        const body =
+            document.getElementById("alertsTableBody");
+
+        if (body) {
+            body.innerHTML = allAlerts
+                .map(alert => `
+                    <tr>
+                        <td>${escapeHtml(alert.niveau)}</td>
+                        <td>${escapeHtml(alert.titre)}</td>
+                        <td>${escapeHtml(alert.message)}</td>
+                    </tr>
+                `)
+                .join("");
+        }
+
+    } catch (error) {
+        console.error(
+            "Erreur de chargement des alertes :",
+            error
         );
 
-    if(body){
+        if (container) {
+            container.innerHTML = `
+                <div class="alerts-error">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
 
-        body.innerHTML = html;
+                    <div>
+                        <h3>Impossible de charger les alertes</h3>
 
+                        <p>
+                            Vérifie la route
+                            <code>/api/alerts/</code>
+                            et la console du serveur Flask.
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
     }
 }
 async function loadAgenda(){

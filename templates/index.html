@@ -1062,7 +1062,469 @@ tr:hover{
         width: 100%;
     }
 }
-   
+ /* =====================================================
+   ALERTES
+===================================================== */
+
+.top-alert-button {
+    position: relative;
+
+    width: 42px;
+    height: 42px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #f8fafc;
+    color: #64748b;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+
+    cursor: pointer;
+    font-size: 17px;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.top-alert-button:hover {
+    background: #eff6ff;
+    color: var(--blue);
+    transform: translateY(-1px);
+}
+
+.top-alert-button.has-alerts {
+    color: #dc2626;
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.top-alert-button #topAlertCount {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+
+    min-width: 21px;
+    height: 21px;
+    padding: 0 5px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+    background: #dc2626;
+
+    border: 2px solid white;
+    border-radius: 999px;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.nav-alert-badge {
+    margin-left: auto;
+
+    min-width: 23px;
+    height: 23px;
+    padding: 0 7px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+    background: #dc2626;
+
+    border-radius: 999px;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.page-eyebrow {
+    display: block;
+    margin-bottom: 5px;
+
+    color: var(--blue);
+
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.alert-summary-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(170px, 1fr));
+
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.alert-summary-card {
+    min-height: 108px;
+    padding: 19px;
+
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    background: white;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 17px;
+
+    box-shadow:
+        0 7px 24px rgba(15, 23, 42, 0.06);
+}
+
+.alert-summary-icon {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 14px;
+    font-size: 19px;
+}
+
+.alert-summary-card span {
+    display: block;
+    margin-bottom: 5px;
+
+    color: #64748b;
+
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.alert-summary-card strong {
+    color: #0f172a;
+
+    font-size: 28px;
+    line-height: 1;
+}
+
+.alert-summary-card.critical .alert-summary-icon {
+    color: #dc2626;
+    background: #fee2e2;
+}
+
+.alert-summary-card.warning .alert-summary-icon {
+    color: #b45309;
+    background: #fef3c7;
+}
+
+.alert-summary-card.info .alert-summary-icon {
+    color: #2563eb;
+    background: #dbeafe;
+}
+
+.alert-summary-card.total .alert-summary-icon {
+    color: #7c3aed;
+    background: #f3e8ff;
+}
+
+.alert-toolbar {
+    margin-bottom: 18px;
+    padding: 14px;
+
+    display: grid;
+    grid-template-columns:
+        minmax(260px, 1fr) 180px 180px;
+
+    gap: 12px;
+
+    background: white;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 15px;
+}
+
+.alert-search {
+    position: relative;
+}
+
+.alert-search i {
+    position: absolute;
+    top: 50%;
+    left: 14px;
+
+    color: #94a3b8;
+
+    transform: translateY(-50%);
+}
+
+.alert-search input,
+.alert-toolbar select {
+    width: 100%;
+    height: 43px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+
+    background: white;
+    color: #334155;
+
+    font-family: inherit;
+    font-size: 13px;
+
+    outline: none;
+}
+
+.alert-search input {
+    padding: 0 14px 0 40px;
+}
+
+.alert-toolbar select {
+    padding: 0 12px;
+}
+
+.alert-search input:focus,
+.alert-toolbar select:focus {
+    border-color: var(--blue);
+
+    box-shadow:
+        0 0 0 4px rgba(24, 95, 165, 0.1);
+}
+
+.alerts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+}
+
+.alert-item {
+    position: relative;
+
+    padding: 18px;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+
+    background: white;
+
+    border: 1px solid #e5e7eb;
+    border-left-width: 5px;
+    border-radius: 16px;
+
+    box-shadow:
+        0 6px 20px rgba(15, 23, 42, 0.05);
+}
+
+.alert-critique {
+    border-left-color: #dc2626;
+}
+
+.alert-attention {
+    border-left-color: #f59e0b;
+}
+
+.alert-info {
+    border-left-color: #2563eb;
+}
+
+.alert-item-icon {
+    width: 45px;
+    height: 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 13px;
+    font-size: 18px;
+}
+
+.alert-critique .alert-item-icon {
+    color: #dc2626;
+    background: #fee2e2;
+}
+
+.alert-attention .alert-item-icon {
+    color: #b45309;
+    background: #fef3c7;
+}
+
+.alert-info .alert-item-icon {
+    color: #2563eb;
+    background: #dbeafe;
+}
+
+.alert-item-content {
+    min-width: 0;
+    flex: 1;
+}
+
+.alert-item-header {
+    margin-bottom: 9px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.alert-item-header time {
+    color: #94a3b8;
+
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.alert-level-badge,
+.alert-status-badge {
+    margin-right: 6px;
+    padding: 5px 9px;
+
+    display: inline-flex;
+
+    border-radius: 999px;
+
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+}
+
+.alert-critique .alert-level-badge {
+    color: #991b1b;
+    background: #fee2e2;
+}
+
+.alert-attention .alert-level-badge {
+    color: #92400e;
+    background: #fef3c7;
+}
+
+.alert-info .alert-level-badge {
+    color: #1d4ed8;
+    background: #dbeafe;
+}
+
+.status-ouverte {
+    color: #166534;
+    background: #dcfce7;
+}
+
+.status-fermee {
+    color: #475569;
+    background: #e2e8f0;
+}
+
+.alert-item h3 {
+    margin-bottom: 6px;
+
+    color: #1e293b;
+    font-size: 15px;
+}
+
+.alert-item p {
+    color: #64748b;
+
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.alerts-loading,
+.alerts-empty,
+.alerts-error {
+    min-height: 230px;
+    padding: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+
+    text-align: center;
+
+    background: white;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 17px;
+
+    color: #64748b;
+}
+
+.alerts-empty {
+    flex-direction: column;
+}
+
+.alerts-empty-icon {
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #15803d;
+    background: #dcfce7;
+
+    border-radius: 18px;
+    font-size: 24px;
+}
+
+.alerts-empty h3,
+.alerts-error h3 {
+    color: #334155;
+}
+
+.alerts-empty p,
+.alerts-error p {
+    margin-top: 5px;
+    font-size: 13px;
+}
+
+.alerts-error {
+    color: #dc2626;
+    background: #fff7f7;
+    border-color: #fecaca;
+}
+
+@media (max-width: 1000px) {
+    .alert-summary-grid {
+        grid-template-columns:
+            repeat(2, minmax(170px, 1fr));
+    }
+
+    .alert-toolbar {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .alert-search {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 600px) {
+    .alert-summary-grid,
+    .alert-toolbar {
+        grid-template-columns: 1fr;
+    }
+
+    .alert-search {
+        grid-column: auto;
+    }
+
+    .alert-item-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}  
 </style>
 </head>
 
@@ -1178,7 +1640,20 @@ tr:hover{
                 Signatures
 
             </a>
+<a
+    id="nav-alerts"
+    onclick="showPage('alerts')"
+>
+    <i class="fa-solid fa-bell"></i>
+    Alertes
 
+    <span
+        id="sidebarAlertCount"
+        class="nav-alert-badge"
+    >
+        0
+    </span>
+</a>
             <a
             id="nav-users"
             onclick="showPage('users')">
@@ -1211,11 +1686,19 @@ tr:hover{
 
             <div class="topbar-right">
 
-                <span id="topAlertCount">
+               <button
+    id="topAlertButton"
+    class="top-alert-button"
+    type="button"
+    onclick="showPage('alerts')"
+    title="Afficher les alertes"
+>
+    <i class="fa-solid fa-bell"></i>
 
-                    0
-
-                </span>
+    <span id="topAlertCount">
+        0
+    </span>
+</button>
 
                 <a href="/logout">
 
@@ -1935,7 +2418,149 @@ class="page">
     </table>
 
 </section>
+<!-- ===================================== -->
+<!-- ALERTES -->
+<!-- ===================================== -->
 
+<section id="page-alerts" class="page">
+
+    <div class="page-header">
+
+        <div>
+            <span class="page-eyebrow">
+                Surveillance opérationnelle
+            </span>
+
+            <h2>Centre des alertes</h2>
+
+            <p>
+                Suivi des documents expirés, des échéances,
+                des ruptures de stock et des opérations critiques.
+            </p>
+        </div>
+
+        <button
+            type="button"
+            class="btn-secondary"
+            onclick="loadAlerts()"
+        >
+            <i class="fa-solid fa-rotate"></i>
+            Actualiser
+        </button>
+
+    </div>
+
+
+    <!-- COMPTEURS -->
+
+    <div class="alert-summary-grid">
+
+        <article class="alert-summary-card critical">
+            <div class="alert-summary-icon">
+                <i class="fa-solid fa-circle-exclamation"></i>
+            </div>
+
+            <div>
+                <span>Critiques</span>
+                <strong id="criticalAlertsCount">0</strong>
+            </div>
+        </article>
+
+
+        <article class="alert-summary-card warning">
+            <div class="alert-summary-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+
+            <div>
+                <span>Attention</span>
+                <strong id="warningAlertsCount">0</strong>
+            </div>
+        </article>
+
+
+        <article class="alert-summary-card info">
+            <div class="alert-summary-icon">
+                <i class="fa-solid fa-circle-info"></i>
+            </div>
+
+            <div>
+                <span>Informations</span>
+                <strong id="infoAlertsCount">0</strong>
+            </div>
+        </article>
+
+
+        <article class="alert-summary-card total">
+            <div class="alert-summary-icon">
+                <i class="fa-solid fa-bell"></i>
+            </div>
+
+            <div>
+                <span>Total ouvert</span>
+                <strong id="openAlertsCount">0</strong>
+            </div>
+        </article>
+
+    </div>
+
+
+    <!-- FILTRES -->
+
+    <div class="alert-toolbar">
+
+        <div class="alert-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+                id="alertSearchInput"
+                type="search"
+                placeholder="Rechercher une alerte..."
+                oninput="filterAlerts()"
+            >
+        </div>
+
+        <select
+            id="alertLevelFilter"
+            onchange="filterAlerts()"
+        >
+            <option value="">Tous les niveaux</option>
+            <option value="CRITIQUE">Critique</option>
+            <option value="ATTENTION">Attention</option>
+            <option value="INFO">Information</option>
+        </select>
+
+        <select
+            id="alertStatusFilter"
+            onchange="filterAlerts()"
+        >
+            <option value="">Tous les statuts</option>
+            <option value="OUVERTE">Ouverte</option>
+            <option value="FERMEE">Fermée</option>
+        </select>
+
+    </div>
+
+
+    <!-- LISTE -->
+
+    <div id="alertsList" class="alerts-list">
+
+        <div class="alerts-loading">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            Chargement des alertes...
+        </div>
+
+    </div>
+
+
+    <!-- TABLEAU CACHÉ POUR COMPATIBILITÉ -->
+
+    <table style="display:none">
+        <tbody id="alertsTableBody"></tbody>
+    </table>
+
+</section>
 <!-- ===================================== -->
 <!-- MODAL EMPLOYE -->
 <!-- ===================================== -->
