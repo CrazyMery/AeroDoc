@@ -469,8 +469,7 @@ def delete_event(id_evenement):
 # FORMAT FULLCALENDAR
 # ==========================
 
-@agenda_bp.route("/calendar", methods=["GET"])
-@login_required
+
 @agenda_bp.route("/calendar", methods=["GET"])
 @login_required
 def calendar_events():
