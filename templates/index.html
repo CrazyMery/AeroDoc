@@ -1921,6 +1921,123 @@ tr:hover{
         width: 100%;
     }
 }  
+
+   .input-with-suffix {
+    display: flex;
+    align-items: stretch;
+}
+
+.input-with-suffix input {
+    border-radius: 11px 0 0 11px;
+}
+
+.input-with-suffix span {
+    min-width: 60px;
+    padding: 0 13px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #475569;
+    background: #f1f5f9;
+
+    border: 1px solid #cbd5e1;
+    border-left: none;
+    border-radius: 0 11px 11px 0;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.password-field {
+    position: relative;
+}
+
+.password-field input {
+    padding-right: 48px;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 7px;
+
+    width: 34px;
+    height: 34px;
+
+    border: none;
+    border-radius: 9px;
+
+    color: #64748b;
+    background: transparent;
+
+    cursor: pointer;
+
+    transform: translateY(-50%);
+}
+
+.password-toggle:hover {
+    color: #185fa5;
+    background: #eff6ff;
+}
+
+.signature-modal-content {
+    width: min(900px, 100%);
+}
+
+.signature-pad-wrapper {
+    position: relative;
+    overflow: hidden;
+
+    width: 100%;
+    min-height: 250px;
+
+    background:
+        repeating-linear-gradient(
+            0deg,
+            #ffffff,
+            #ffffff 31px,
+            #e2e8f0 32px
+        );
+
+    border: 2px dashed #94a3b8;
+    border-radius: 15px;
+}
+
+#signatureCanvas {
+    display: block;
+
+    width: 100%;
+    height: 260px;
+
+    cursor: crosshair;
+    touch-action: none;
+}
+
+.signature-pad-hint {
+    position: absolute;
+    left: 50%;
+    bottom: 15px;
+
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    color: #94a3b8;
+
+    font-size: 12px;
+
+    pointer-events: none;
+    transform: translateX(-50%);
+}
+
+.signature-tools {
+    margin-top: 12px;
+
+    display: flex;
+    justify-content: flex-start;
+}
 </style>
 </head>
 
@@ -3650,85 +3767,334 @@ class="page">
 
 <div id="maintenanceModal" class="modal">
 
-    <div class="modal-content large">
+    <div class="modal-content">
 
-        <span
-        class="close"
-        onclick="closeModal('maintenanceModal')">
-        ×
-        </span>
+        <div class="modal-form-header">
 
-        <h2>
-            Nouvelle Maintenance
-        </h2>
+            <div class="modal-form-title">
 
-        <form id="maintenanceForm">
+                <div class="modal-form-icon">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                </div>
 
-            <input
-            type="text"
-            name="reference_fiche"
-            placeholder="Référence maintenance">
+                <div>
+                    <h2>Nouvelle maintenance</h2>
+                    <p>
+                        Planifier une intervention sur un aéronef.
+                    </p>
+                </div>
 
-            <input
-            type="text"
-            name="type_aeronef"
-            placeholder="Type aéronef">
-
-            <input
-            type="text"
-            name="immatriculation"
-            placeholder="Immatriculation">
-
-            <select
-            name="type_maintenance">
-
-                <option>
-                    Inspection 500h
-                </option>
-
-                <option>
-                    Inspection 1000h
-                </option>
-
-                <option>
-                    Contrôle moteur
-                </option>
-
-                <option>
-                    Maintenance corrective
-                </option>
-
-            </select>
-
-            <input
-            type="datetime-local"
-            name="date_intervention">
-
-            <input
-            type="number"
-            step="0.1"
-            name="duree_heures"
-            placeholder="Durée (h)">
-
-            <textarea
-            name="description"
-            placeholder="Description">
-            </textarea>
+            </div>
 
             <button
-            type="button"
-            onclick="saveMaintenance()">
-
-                Enregistrer
-
+                type="button"
+                class="modal-close"
+                onclick="closeModal('maintenanceModal')"
+                aria-label="Fermer"
+            >
+                ×
             </button>
 
-        </form>
+        </div>
+
+        <div class="modal-form-body">
+
+            <form id="maintenanceForm">
+
+                <div class="form-grid">
+
+                    <div class="form-section-title">
+                        Identification de l’intervention
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="maintenanceReference">
+                            Référence de fiche
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <input
+                            id="maintenanceReference"
+                            type="text"
+                            name="reference_fiche"
+                            placeholder="Ex. MAINT-2026-001"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="maintenanceStatus">
+                            Statut
+                        </label>
+
+                        <select
+                            id="maintenanceStatus"
+                            name="statut"
+                        >
+                            <option value="PLANIFIEE">
+                                Planifiée
+                            </option>
+
+                            <option value="EN_COURS">
+                                En cours
+                            </option>
+
+                            <option value="TERMINEE">
+                                Terminée
+                            </option>
+
+                            <option value="ANNULEE">
+                                Annulée
+                            </option>
+                        </select>
+
+                    </div>
+
+                    <div class="form-section-title">
+                        Aéronef
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="maintenanceAircraft">
+                            Type d’aéronef
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <select
+                            id="maintenanceAircraft"
+                            name="type_aeronef"
+                            required
+                        >
+                            <option value="">
+                                Sélectionner un aéronef
+                            </option>
+
+                            <option value="ATR 72">
+                                ATR 72
+                            </option>
+
+                            <option value="ATR 42">
+                                ATR 42
+                            </option>
+
+                            <option value="CESSNA 650">
+                                Cessna 650
+                            </option>
+
+                            <option value="KING AIR 300">
+                                King Air 300
+                            </option>
+
+                            <option value="B737">
+                                Boeing 737
+                            </option>
+
+                            <option value="AUTRE">
+                                Autre
+                            </option>
+                        </select>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="maintenanceRegistration">
+                            Immatriculation
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <input
+                            id="maintenanceRegistration"
+                            type="text"
+                            name="immatriculation"
+                            placeholder="Ex. CN-ABC"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="form-section-title">
+                        Intervention
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="maintenanceType">
+                            Type de maintenance
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <select
+                            id="maintenanceType"
+                            name="type_maintenance"
+                            required
+                        >
+                            <option value="">
+                                Sélectionner un type
+                            </option>
+
+                            <option value="INSPECTION_500H">
+                                Inspection 500 h
+                            </option>
+
+                            <option value="INSPECTION_1000H">
+                                Inspection 1 000 h
+                            </option>
+
+                            <option value="CONTROLE_MOTEUR">
+                                Contrôle moteur
+                            </option>
+
+                            <option value="MAINTENANCE_PREVENTIVE">
+                                Maintenance préventive
+                            </option>
+
+                            <option value="MAINTENANCE_CORRECTIVE">
+                                Maintenance corrective
+                            </option>
+
+                            <option value="INSPECTION_AVIONIQUE">
+                                Inspection avionique
+                            </option>
+                        </select>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="maintenanceDate">
+                            Date d’intervention
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <input
+                            id="maintenanceDate"
+                            type="datetime-local"
+                            name="date_intervention"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="maintenanceDuration">
+                            Durée prévue
+                        </label>
+
+                        <div class="input-with-suffix">
+
+                            <input
+                                id="maintenanceDuration"
+                                type="number"
+                                name="duree_heures"
+                                min="0.5"
+                                step="0.5"
+                                placeholder="Ex. 4"
+                            >
+
+                            <span>heures</span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="maintenanceEmployee">
+                            Identifiant du technicien
+                        </label>
+
+                        <input
+                            id="maintenanceEmployee"
+                            type="number"
+                            name="id_employe"
+                            min="1"
+                            placeholder="Ex. 3"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="maintenanceClient">
+                            Identifiant du client
+                        </label>
+
+                        <input
+                            id="maintenanceClient"
+                            type="number"
+                            name="id_client"
+                            min="1"
+                            placeholder="Ex. 12"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="maintenanceDocument">
+                            Document associé
+                        </label>
+
+                        <input
+                            id="maintenanceDocument"
+                            type="number"
+                            name="id_document"
+                            min="1"
+                            placeholder="Identifiant du document"
+                        >
+
+                    </div>
+
+                    <div class="form-group full">
+
+                        <label for="maintenanceDescription">
+                            Description de l’intervention
+                        </label>
+
+                        <textarea
+                            id="maintenanceDescription"
+                            name="description"
+                            placeholder="Décrire les opérations prévues, les contrôles et les observations..."
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="btn-cancel"
+                        onclick="closeModal('maintenanceModal')"
+                    >
+                        Annuler
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-submit"
+                        onclick="saveMaintenance()"
+                    >
+                        <i class="fa-solid fa-calendar-check"></i>
+                        Planifier la maintenance
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
 
     </div>
 
 </div>
-
 
 <!-- ===================================== -->
 <!-- MODAL AGENDA -->
@@ -3736,117 +4102,388 @@ class="page">
 
 <div id="agendaModal" class="modal">
 
-    <div class="modal-content large">
+    <div class="modal-content">
 
-        <span
-        class="close"
-        onclick="closeModal('agendaModal')">
-        ×
-        </span>
+        <div class="modal-form-header">
 
-        <h2>
-            Nouvel Événement
-        </h2>
+            <div class="modal-form-title">
 
-        <form id="agendaForm">
+                <div class="modal-form-icon">
+                    <i class="fa-solid fa-calendar-plus"></i>
+                </div>
 
-            <input
-            type="text"
-            name="titre"
-            placeholder="Titre">
+                <div>
+                    <h2>Nouvel événement</h2>
+                    <p>
+                        Ajouter une réunion, une maintenance ou une échéance.
+                    </p>
+                </div>
 
-            <select
-            name="categorie">
-
-                <option value="REUNION_CLIENT">
-                    Réunion Client
-                </option>
-
-                <option value="REUNION_ADMIN">
-                    Réunion Administrative
-                </option>
-
-                <option value="MAINTENANCE">
-                    Maintenance
-                </option>
-
-                <option value="ACHAT_MATERIEL">
-                    Achat matériel
-                </option>
-
-                <option value="RECEPTION_MATERIEL">
-                    Réception matériel
-                </option>
-
-                <option value="PAIEMENT">
-                    Paiement
-                </option>
-
-            </select>
-
-            <input
-            type="datetime-local"
-            name="date_debut">
-
-            <input
-            type="datetime-local"
-            name="date_fin">
-
-            <input
-            type="text"
-            name="lieu"
-            placeholder="Lieu">
-
-            <input
-            type="text"
-            name="organisateur"
-            placeholder="Organisateur">
-
-            <input
-            type="text"
-            name="fournisseur"
-            placeholder="Fournisseur">
-
-            <input
-            type="text"
-            name="piece"
-            placeholder="Pièce / matériel">
-
-            <input
-            type="number"
-            name="quantite"
-            placeholder="Quantité">
-
-            <input
-            type="number"
-            step="0.01"
-            name="montant"
-            placeholder="Montant">
-
-            <input
-            type="text"
-            name="technicien"
-            placeholder="Technicien">
-
-            <input
-            type="text"
-            name="hangar"
-            placeholder="Hangar">
-
-            <textarea
-            name="description"
-            placeholder="Description">
-            </textarea>
+            </div>
 
             <button
-            type="button"
-            onclick="saveAgenda()">
-
-                Enregistrer
-
+                type="button"
+                class="modal-close"
+                onclick="closeModal('agendaModal')"
+            >
+                ×
             </button>
 
-        </form>
+        </div>
+
+        <div class="modal-form-body">
+
+            <form id="agendaForm">
+
+                <div class="form-grid">
+
+                    <div class="form-section-title">
+                        Informations principales
+                    </div>
+
+                    <div class="form-group full">
+
+                        <label for="agendaTitle">
+                            Titre
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <input
+                            id="agendaTitle"
+                            type="text"
+                            name="titre"
+                            placeholder="Ex. Réunion client Royal Air Maroc"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="agendaCategory">
+                            Catégorie
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <select
+                            id="agendaCategory"
+                            name="categorie"
+                            required
+                        >
+                            <option value="">
+                                Sélectionner une catégorie
+                            </option>
+
+                            <option value="REUNION_CLIENT">
+                                Réunion client
+                            </option>
+
+                            <option value="REUNION_ADMIN">
+                                Réunion administrative
+                            </option>
+
+                            <option value="MAINTENANCE">
+                                Maintenance
+                            </option>
+
+                            <option value="COMMANDE_MATERIEL">
+                                Commande de matériel
+                            </option>
+
+                            <option value="RECEPTION_MATERIEL">
+                                Réception de matériel
+                            </option>
+
+                            <option value="PAIEMENT">
+                                Paiement
+                            </option>
+
+                            <option value="AUDIT">
+                                Audit
+                            </option>
+
+                            <option value="FORMATION">
+                                Formation
+                            </option>
+
+                            <option value="LIVRAISON">
+                                Livraison
+                            </option>
+
+                            <option value="AUTRE">
+                                Autre
+                            </option>
+                        </select>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="agendaStatus">
+                            Statut
+                        </label>
+
+                        <select
+                            id="agendaStatus"
+                            name="statut"
+                        >
+                            <option value="PLANIFIE">
+                                Planifié
+                            </option>
+
+                            <option value="EN_COURS">
+                                En cours
+                            </option>
+
+                            <option value="TERMINE">
+                                Terminé
+                            </option>
+
+                            <option value="ANNULE">
+                                Annulé
+                            </option>
+                        </select>
+
+                    </div>
+
+                    <div class="form-section-title">
+                        Date et lieu
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="agendaStart">
+                            Date de début
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <input
+                            id="agendaStart"
+                            type="datetime-local"
+                            name="date_debut"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="agendaEnd">
+                            Date de fin
+                        </label>
+
+                        <input
+                            id="agendaEnd"
+                            type="datetime-local"
+                            name="date_fin"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="agendaPlace">
+                            Lieu
+                        </label>
+
+                        <input
+                            id="agendaPlace"
+                            type="text"
+                            name="lieu"
+                            placeholder="Ex. Hangar 2 ou salle de réunion"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="agendaOrganizer">
+                            Organisateur
+                        </label>
+
+                        <input
+                            id="agendaOrganizer"
+                            type="text"
+                            name="organisateur"
+                            placeholder="Nom de l’organisateur"
+                        >
+
+                    </div>
+
+                    <div class="form-section-title">
+                        Informations complémentaires
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="agendaClient">
+                            Identifiant du client
+                        </label>
+
+                        <input
+                            id="agendaClient"
+                            type="number"
+                            name="id_client"
+                            min="1"
+                            placeholder="Ex. 5"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="agendaSupplier">
+                            Fournisseur
+                        </label>
+
+                        <input
+                            id="agendaSupplier"
+                            type="text"
+                            name="fournisseur"
+                            placeholder="Nom du fournisseur"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="agendaPart">
+                            Pièce ou matériel
+                        </label>
+
+                        <input
+                            id="agendaPart"
+                            type="text"
+                            name="piece"
+                            placeholder="Désignation du matériel"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="agendaQuantity">
+                            Quantité
+                        </label>
+
+                        <input
+                            id="agendaQuantity"
+                            type="number"
+                            name="quantite"
+                            min="1"
+                            placeholder="Ex. 10"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="agendaAmount">
+                            Montant
+                        </label>
+
+                        <div class="input-with-suffix">
+
+                            <input
+                                id="agendaAmount"
+                                type="number"
+                                name="montant"
+                                min="0"
+                                step="0.01"
+                                placeholder="0,00"
+                            >
+
+                            <span>DH</span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="agendaTechnician">
+                            Technicien
+                        </label>
+
+                        <input
+                            id="agendaTechnician"
+                            type="text"
+                            name="technicien"
+                            placeholder="Nom du technicien"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="agendaHangar">
+                            Hangar
+                        </label>
+
+                        <input
+                            id="agendaHangar"
+                            type="text"
+                            name="hangar"
+                            placeholder="Ex. Hangar A"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="agendaMaintenanceType">
+                            Type de maintenance
+                        </label>
+
+                        <input
+                            id="agendaMaintenanceType"
+                            type="text"
+                            name="type_maintenance"
+                            placeholder="Ex. Inspection 500 h"
+                        >
+
+                    </div>
+
+                    <div class="form-group full">
+
+                        <label for="agendaDescription">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="agendaDescription"
+                            name="description"
+                            placeholder="Informations complémentaires sur l’événement..."
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="btn-cancel"
+                        onclick="closeModal('agendaModal')"
+                    >
+                        Annuler
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-submit"
+                        onclick="saveAgenda()"
+                    >
+                        <i class="fa-solid fa-calendar-check"></i>
+                        Créer l’événement
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
 
     </div>
 
@@ -3861,74 +4498,216 @@ class="page">
 
     <div class="modal-content">
 
-        <span
-        class="close"
-        onclick="closeModal('userModal')">
-        ×
-        </span>
+        <div class="modal-form-header">
 
-        <h2>
-            Nouvel Utilisateur
-        </h2>
+            <div class="modal-form-title">
 
-        <form id="userForm">
+                <div class="modal-form-icon">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
 
-            <input
-            type="text"
-            name="nom"
-            placeholder="Nom">
+                <div>
+                    <h2>Nouvel utilisateur</h2>
+                    <p>
+                        Créer un compte et définir ses droits d’accès.
+                    </p>
+                </div>
 
-            <input
-            type="text"
-            name="prenom"
-            placeholder="Prénom">
-
-            <input
-            type="text"
-            name="login"
-            placeholder="Login">
-
-            <input
-            type="email"
-            name="email"
-            placeholder="Email">
-
-            <input
-            type="password"
-            name="mot_de_passe"
-            placeholder="Mot de passe">
-
-            <select
-            name="role">
-
-                <option value="ADMIN">
-                    ADMIN
-                </option>
-
-                <option value="EDITEUR">
-                    EDITEUR
-                </option>
-
-                <option value="LECTEUR">
-                    LECTEUR
-                </option>
-
-            </select>
+            </div>
 
             <button
-            type="button"
-            onclick="saveUser()">
-
-                Enregistrer
-
+                type="button"
+                class="modal-close"
+                onclick="closeModal('userModal')"
+            >
+                ×
             </button>
 
-        </form>
+        </div>
+
+        <div class="modal-form-body">
+
+            <form id="userForm">
+
+                <div class="form-grid">
+
+                    <div class="form-section-title">
+                        Identité
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="userLastName">
+                            Nom
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <input
+                            id="userLastName"
+                            type="text"
+                            name="nom"
+                            placeholder="Nom"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="userFirstName">
+                            Prénom
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <input
+                            id="userFirstName"
+                            type="text"
+                            name="prenom"
+                            placeholder="Prénom"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="form-group full">
+
+                        <label for="userEmail">
+                            Adresse e-mail
+                        </label>
+
+                        <input
+                            id="userEmail"
+                            type="email"
+                            name="email"
+                            placeholder="nom@delta-aerospace.com"
+                        >
+
+                    </div>
+
+                    <div class="form-section-title">
+                        Informations de connexion
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="userLogin">
+                            Identifiant
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <input
+                            id="userLogin"
+                            type="text"
+                            name="login"
+                            placeholder="Ex. m.elatouani"
+                            autocomplete="username"
+                            required
+                        >
+
+                        <span class="form-help">
+                            L’identifiant doit être unique.
+                        </span>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="userPassword">
+                            Mot de passe
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <div class="password-field">
+
+                            <input
+                                id="userPassword"
+                                type="password"
+                                name="mot_de_passe"
+                                placeholder="Minimum 8 caractères"
+                                minlength="8"
+                                autocomplete="new-password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                onclick="togglePasswordVisibility('userPassword', this)"
+                                aria-label="Afficher le mot de passe"
+                            >
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-section-title">
+                        Autorisations
+                    </div>
+
+                    <div class="form-group full">
+
+                        <label for="userRole">
+                            Rôle
+                            <span class="form-required">*</span>
+                        </label>
+
+                        <select
+                            id="userRole"
+                            name="role"
+                            required
+                        >
+                            <option value="LECTEUR">
+                                Lecteur — consultation uniquement
+                            </option>
+
+                            <option value="EDITEUR">
+                                Éditeur — ajout et modification
+                            </option>
+
+                            <option value="ADMIN">
+                                Administrateur — accès complet
+                            </option>
+                        </select>
+
+                        <span class="form-help">
+                            Les administrateurs peuvent gérer les utilisateurs
+                            et supprimer des données.
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="btn-cancel"
+                        onclick="closeModal('userModal')"
+                    >
+                        Annuler
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-submit"
+                        onclick="saveUser()"
+                    >
+                        <i class="fa-solid fa-user-plus"></i>
+                        Créer l’utilisateur
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
 
     </div>
 
 </div>
-
 
 <!-- ===================================== -->
 <!-- MODAL SIGNATURE -->
@@ -3936,52 +4715,141 @@ class="page">
 
 <div id="signatureModal" class="modal">
 
-    <div class="modal-content">
+    <div class="modal-content signature-modal-content">
 
-        <span
-        class="close"
-        onclick="closeModal('signatureModal')">
-        ×
-        </span>
+        <div class="modal-form-header">
 
-        <h2>
-            Signature électronique
-        </h2>
+            <div class="modal-form-title">
 
-        <input
-        type="hidden"
-        id="signDocumentId">
+                <div class="modal-form-icon">
+                    <i class="fa-solid fa-signature"></i>
+                </div>
 
-        <input
-        type="text"
-        id="signataireNom"
-        placeholder="Nom signataire">
+                <div>
+                    <h2>Signature électronique</h2>
+                    <p>
+                        Identifier le signataire puis signer dans la zone prévue.
+                    </p>
+                </div>
 
-        <input
-        type="text"
-        id="signataireFonction"
-        placeholder="Fonction">
+            </div>
 
-        <canvas
-        id="signatureCanvas"
-        width="600"
-        height="250">
-        </canvas>
+            <button
+                type="button"
+                class="modal-close"
+                onclick="closeModal('signatureModal')"
+            >
+                ×
+            </button>
 
-        <br>
+        </div>
 
-        <button
-        class="btn-primary"
-        onclick="signDocument()">
+        <div class="modal-form-body">
 
-            Signer
+            <input
+                type="hidden"
+                id="signDocumentId"
+            >
 
-        </button>
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label for="signataireNom">
+                        Nom du signataire
+                        <span class="form-required">*</span>
+                    </label>
+
+                    <input
+                        id="signataireNom"
+                        type="text"
+                        placeholder="Nom et prénom"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="signataireFonction">
+                        Fonction
+                        <span class="form-required">*</span>
+                    </label>
+
+                    <input
+                        id="signataireFonction"
+                        type="text"
+                        placeholder="Ex. Responsable qualité"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-group full">
+
+                    <label>
+                        Signature
+                        <span class="form-required">*</span>
+                    </label>
+
+                    <div class="signature-pad-wrapper">
+
+                        <canvas
+                            id="signatureCanvas"
+                            width="900"
+                            height="300"
+                        ></canvas>
+
+                        <div class="signature-pad-hint">
+                            <i class="fa-solid fa-pen"></i>
+                            Signez avec la souris ou le doigt
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="signature-tools">
+
+                <button
+                    type="button"
+                    class="btn-cancel"
+                    onclick="clearSignature()"
+                >
+                    <i class="fa-solid fa-eraser"></i>
+                    Effacer la signature
+                </button>
+
+            </div>
+
+            <div class="form-actions">
+
+                <button
+                    type="button"
+                    class="btn-cancel"
+                    onclick="closeModal('signatureModal')"
+                >
+                    Annuler
+                </button>
+
+                <button
+                    type="button"
+                    class="btn-submit"
+                    onclick="signDocument()"
+                >
+                    <i class="fa-solid fa-file-signature"></i>
+                    Signer le document
+                </button>
+
+            </div>
+
+        </div>
 
     </div>
 
 </div>
-
 
 <!-- ===================================== -->
 <!-- SCRIPTS -->
