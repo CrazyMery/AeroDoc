@@ -1182,42 +1182,104 @@ async function loadAgenda(){
 
     }
 }
-async function initCalendar(){
+let agendaCalendar = null;
 
-    const calendarEl =
-        document.getElementById(
-            "calendar"
-        );
+async function initCalendar() {
+    const calendarEl = document.getElementById("calendar");
 
-    if(!calendarEl)
+    if (!calendarEl) {
         return;
+    }
 
-    const r =
-        await fetch(
-            "/api/agenda/calendar"
-        );
+    try {
+        const response = await fetch("/api/agenda/calendar");
 
-    const events =
-        await r.json();
+        if (!response.ok) {
+            throw new Error(`Erreur HTTP ${response.status}`);
+        }
 
-    const calendar =
-        new FullCalendar.Calendar(
+        const events = await response.json();
+
+        console.log("Événements calendrier :", events);
+
+        if (agendaCalendar) {
+            agendaCalendar.removeAllEvents();
+            agendaCalendar.addEventSource(events);
+            agendaCalendar.updateSize();
+            return;
+        }
+
+        agendaCalendar = new FullCalendar.Calendar(
             calendarEl,
             {
+                initialView: "dayGridMonth",
+                locale: "fr",
+                firstDay: 1,
+                height: "auto",
+                nowIndicator: true,
+                navLinks: true,
+                dayMaxEvents: true,
+                displayEventTime: true,
+                eventTimeFormat: {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false
+                },
 
-                initialView:
-                    "dayGridMonth",
+                headerToolbar: {
+                    left: "prev,next today",
+                    center: "title",
+                    right: "dayGridMonth,timeGridWeek,listMonth"
+                },
 
-                locale:
-                    "fr",
+                buttonText: {
+                    today: "Aujourd’hui",
+                    month: "Mois",
+                    week: "Semaine",
+                    list: "Liste"
+                },
 
-                events:
-                    events
+                events: events,
 
+                eventDidMount(info) {
+                    const details = [
+                        info.event.title,
+                        info.event.extendedProps.categorie,
+                        info.event.extendedProps.lieu
+                    ]
+                    .filter(Boolean)
+                    .join(" — ");
+
+                    info.el.title = details;
+                },
+
+                eventClick(info) {
+                    const props = info.event.extendedProps;
+
+                    alert(
+                        `${info.event.title}\n\n` +
+                        `Début : ${info.event.start?.toLocaleString("fr-FR") || "—"}\n` +
+                        `Fin : ${info.event.end?.toLocaleString("fr-FR") || "—"}\n` +
+                        `Catégorie : ${props.categorie || "—"}\n` +
+                        `Statut : ${props.statut || "—"}\n` +
+                        `Lieu : ${props.lieu || "—"}`
+                    );
+                }
             }
         );
 
-    calendar.render();
+        agendaCalendar.render();
+
+        setTimeout(() => {
+            agendaCalendar.updateSize();
+        }, 100);
+
+    } catch (error) {
+        console.error(
+            "Erreur de chargement du calendrier :",
+            error
+        );
+    }
 }
 function openModal(id){
 
