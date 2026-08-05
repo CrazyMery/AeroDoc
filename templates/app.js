@@ -19,54 +19,48 @@ document.addEventListener(
 
     }
 );
-function showPage(page){
+function showPage(pageName) {
 
-    document
-    .querySelectorAll(".page")
-    .forEach(p=>{
-
-        p.classList.remove(
-            "active"
-        );
-
+    document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
     });
 
-    const current =
-        document.getElementById(
-            "page-"+page
-        );
+    document.querySelectorAll("#sidebar nav a").forEach(link => {
+        link.classList.remove("active");
+    });
 
-    if(current){
+    const selectedPage = document.getElementById(`page-${pageName}`);
 
-        current.classList.add(
-            "active"
-        );
-
+    if (!selectedPage) {
+        console.error("Page introuvable :", pageName);
+        return;
     }
 
-    document
-    .querySelectorAll(
-        "#sidebar a"
-    )
-    .forEach(a=>{
+    selectedPage.classList.add("active");
 
-        a.classList.remove(
-            "active"
-        );
+    const selectedLink = document.getElementById(`nav-${pageName}`);
 
-    });
+    if (selectedLink) {
+        selectedLink.classList.add("active");
+    }
 
-    const nav =
-        document.getElementById(
-            "nav-"+page
-        );
+    const titles = {
+        dashboard: "Tableau de bord",
+        employees: "Gestion des employés",
+        documents: "Gestion documentaire",
+        clients: "Gestion des clients",
+        stock: "Stock aéronautique",
+        maintenance: "Gestion de la maintenance",
+        agenda: "Agenda",
+        ocr: "OCR",
+        signatures: "Signatures",
+        users: "Gestion des utilisateurs"
+    };
 
-    if(nav){
+    const title = document.getElementById("page-title");
 
-        nav.classList.add(
-            "active"
-        );
-
+    if (title) {
+        title.textContent = titles[pageName] || "AeroDoc";
     }
 }
 async function loadDashboard(){
