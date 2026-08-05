@@ -533,6 +533,16 @@ tr:hover{
 
     color:#1D4ED8;
 }
+
+
+  .page {
+    display: none;
+    width: 100%;
+}
+
+.page.active {
+    display: block;
+} 
 </style>
 </head>
 
@@ -1898,45 +1908,32 @@ async function loadEmployees(){
 
     }
 }
-async function loadDocuments(){
+async function loadDocuments() {
+    const response = await fetch("/api/documents/");
 
-    const r =
-        await fetch(
-            "/api/documents/"
-        );
+    if (!response.ok) {
+        console.error("Erreur de chargement des documents");
+        return;
+    }
 
-    const data =
-        await r.json();
+    const data = await response.json();
+    let html = "";
 
-    let html="";
-
-    data.forEach(d=>{
-
+    data.forEach((documentItem) => {
         html += `
-        <tr>
-
-            <td>${d.nom_fichier}</td>
-
-            <td>${d.type_document}</td>
-
-            <td>${d.statut}</td>
-
-            <td>${d.date_expiration || ''}</td>
-
-        </tr>
+            <tr>
+                <td>${documentItem.nom_fichier || "—"}</td>
+                <td>${documentItem.type_document || "—"}</td>
+                <td>${documentItem.date_expiration || "Sans expiration"}</td>
+                <td>${documentItem.statut || "—"}</td>
+            </tr>
         `;
-
     });
 
-    const body =
-        document.getElementById(
-            "documentsTableBody"
-        );
+    const body = document.getElementById("documentsTableBody");
 
-    if(body){
-
+    if (body) {
         body.innerHTML = html;
-
     }
 }
 async function loadClients(){
