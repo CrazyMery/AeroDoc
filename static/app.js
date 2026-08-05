@@ -63,45 +63,495 @@ function showPage(pageName) {
         title.textContent = titles[pageName] || "AeroDoc";
     }
 }
-async function loadDashboard(){
+/* =====================================================
+   TABLEAU DE BORD
+===================================================== */
 
-    const r =
-        await fetch(
-            "/api/dashboard/"
+const dashboardCharts = {
+    compliance: null,
+    qualifications: null,
+    topParts: null,
+    stock: null
+};
+
+function setDashboardValue(id, value) {
+    const element = document.getElementById(id);
+
+    if (element) {
+        element.textContent = value ?? 0;
+    }
+}
+
+function destroyDashboardChart(chartName) {
+    if (dashboardCharts[chartName]) {
+        dashboardCharts[chartName].destroy();
+        dashboardCharts[chartName] = null;
+    }
+}
+
+function createEmptyChartMessage(canvasId, message) {
+    const canvas = document.getElementById(canvasId);
+
+    if (!canvas) {
+        return;
+    }
+
+    const parent = canvas.parentElement;
+    let emptyMessage = parent.querySelector(".chart-empty-message");
+
+    if (!emptyMessage) {
+        emptyMessage = document.createElement("div");
+        emptyMessage.className = "chart-empty-message";
+        parent.appendChild(emptyMessage);
+    }
+
+    emptyMessage.textContent = message;
+    emptyMessage.style.display = "flex";
+    canvas.style.display = "none";
+}
+
+function showChartCanvas(canvasId) {
+    const canvas = document.getElementById(canvasId);
+
+    if (!canvas) {
+        return;
+    }
+
+    canvas.style.display = "block";
+
+    const emptyMessage =
+        canvas.parentElement.querySelector(".chart-empty-message");
+
+    if (emptyMessage) {
+        emptyMessage.style.display = "none";
+    }
+}
+
+async function loadDashboard() {
+    try {
+        const response = await fetch("/api/dashboard/");
+
+        if (!response.ok) {
+            throw new Error(
+                `Erreur HTTP ${response.status}`
+            );
+        }
+
+        const data = await response.json();
+
+        /* KPI principaux */
+
+        setDashboardValue(
+            "kpiEmployees",
+            data.total_employes
         );
 
-    const d =
-        await r.json();
+        setDashboardValue(
+            "kpiDocuments",
+            data.total_documents
+        );
 
-    if(document.getElementById("kpiEmployees"))
-        document.getElementById(
-            "kpiEmployees"
-        ).innerText =
-            d.total_employes || 0;
+        setDashboardValue(
+            "kpiClients",
+            data.total_clients
+        );
 
-    if(document.getElementById("kpiDocuments"))
-        document.getElementById(
-            "kpiDocuments"
-        ).innerText =
-            d.total_documents || 0;
+        setDashboardValue(
+            "kpiMaintenance",
+            data.total_maintenances
+        );
 
-    if(document.getElementById("kpiClients"))
-        document.getElementById(
-            "kpiClients"
-        ).innerText =
-            d.total_clients || 0;
+        setDashboardValue(
+            "kpiAlerts",
+            data.active_alerts
+        );
 
-    if(document.getElementById("kpiMaintenance"))
-        document.getElementById(
-            "kpiMaintenance"
-        ).innerText =
-            d.total_maintenances || 0;
+        /* KPI avancés */
 
-    if(document.getElementById("kpiAlerts"))
-        document.getElementById(
-            "kpiAlerts"
-        ).innerText =
-            d.active_alerts || 0;
+        setDashboardValue(
+            "kpiStock",
+            data.stock_total
+        );
+
+        setDashboardValue(
+            "kpiCriticalParts",
+            data.pieces_critiques
+        );
+
+        setDashboardValue(
+            "kpiOutParts",
+            data.pieces_rupture
+        );
+
+        setDashboardValue(
+            "kpiValidDocs",
+            data.valid_documents
+        );
+
+        setDashboardValue(
+            "kpiRenewDocs",
+            data.renew_documents
+        );
+
+        setDashboardValue(
+            "topAlertCount",
+            data.active_alerts
+        );
+
+        renderComplianceChart(data);
+        renderQualificationsChart(data);
+        renderTopPartsChart(data);
+        renderStockChart(data);
+
+    } catch (error) {
+        console.error(
+            "Impossible de charger le tableau de bord :",
+            error
+        );
+    }
+}
+
+
+/* =====================================================
+   GRAPHIQUE DOCUMENTS
+===================================================== */
+
+function renderComplianceChart(data) {
+    const canvas =
+        document.getElementById("chartCompliance");
+
+    if (!canvas || typeof Chart === "undefined") {
+        return;
+    }
+
+    destroyDashboardChart("compliance");
+    showChartCanvas("chartCompliance");
+
+    dashboardCharts.compliance =
+        new Chart(canvas, {
+            type: "doughnut",
+
+            data: {
+                labels: [
+                    "Valides",
+                    "À renouveler",
+                    "Expirés"
+                ],
+
+                datasets: [{
+                    data: [
+                        Number(data.valid_documents || 0),
+                        Number(data.renew_documents || 0),
+                        Number(data.expired_documents || 0)
+                    ],
+
+                    backgroundColor: [
+                        "#22C55E",
+                        "#F59E0B",
+                        "#EF4444"
+                    ],
+
+                    borderColor: "#FFFFFF",
+                    borderWidth: 4,
+                    hoverOffset: 8
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: "67%",
+
+                plugins: {
+                    legend: {
+                        position: "bottom",
+
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: "circle",
+                            padding: 20,
+                            font: {
+                                size: 13
+                            }
+                        }
+                    },
+
+                    tooltip: {
+                        callbacks: {
+                            label(context) {
+                                return `${context.label} : ${context.raw}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+}
+
+
+/* =====================================================
+   GRAPHIQUE QUALIFICATIONS
+===================================================== */
+
+function renderQualificationsChart(data) {
+    const canvas =
+        document.getElementById("chartQualifications");
+
+    if (!canvas || typeof Chart === "undefined") {
+        return;
+    }
+
+    const qualifications =
+        Array.isArray(data.qualifications)
+            ? data.qualifications
+            : [];
+
+    destroyDashboardChart("qualifications");
+
+    if (qualifications.length === 0) {
+        createEmptyChartMessage(
+            "chartQualifications",
+            "Aucune qualification enregistrée."
+        );
+        return;
+    }
+
+    showChartCanvas("chartQualifications");
+
+    dashboardCharts.qualifications =
+        new Chart(canvas, {
+            type: "bar",
+
+            data: {
+                labels: qualifications.map(
+                    item =>
+                        item.nom_qualification ||
+                        "Non renseignée"
+                ),
+
+                datasets: [{
+                    label: "Nombre d’employés",
+
+                    data: qualifications.map(
+                        item => Number(item.total || 0)
+                    ),
+
+                    backgroundColor: "#7C3AED",
+                    borderRadius: 8,
+                    borderSkipped: false
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+
+                        ticks: {
+                            precision: 0
+                        },
+
+                        grid: {
+                            color: "#EEF2F7"
+                        }
+                    },
+
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+}
+
+
+/* =====================================================
+   GRAPHIQUE PIÈCES UTILISÉES
+===================================================== */
+
+function renderTopPartsChart(data) {
+    const canvas =
+        document.getElementById("chartTopParts");
+
+    if (!canvas || typeof Chart === "undefined") {
+        return;
+    }
+
+    const parts =
+        Array.isArray(data.top_pieces)
+            ? data.top_pieces.slice(0, 7)
+            : [];
+
+    destroyDashboardChart("topParts");
+
+    if (parts.length === 0) {
+        createEmptyChartMessage(
+            "chartTopParts",
+            "Aucune utilisation de pièce validée."
+        );
+        return;
+    }
+
+    showChartCanvas("chartTopParts");
+
+    dashboardCharts.topParts =
+        new Chart(canvas, {
+            type: "bar",
+
+            data: {
+                labels: parts.map(
+                    item =>
+                        item.designation ||
+                        "Pièce inconnue"
+                ),
+
+                datasets: [{
+                    label: "Quantité utilisée",
+
+                    data: parts.map(
+                        item => Number(item.total || 0)
+                    ),
+
+                    backgroundColor: "#185FA5",
+                    borderRadius: 8,
+                    borderSkipped: false
+                }]
+            },
+
+            options: {
+                indexAxis: "y",
+                responsive: true,
+                maintainAspectRatio: false,
+
+                scales: {
+                    x: {
+                        beginAtZero: true,
+
+                        ticks: {
+                            precision: 0
+                        },
+
+                        grid: {
+                            color: "#EEF2F7"
+                        }
+                    },
+
+                    y: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+}
+
+
+/* =====================================================
+   GRAPHIQUE STOCK ET MAINTENANCE
+===================================================== */
+
+function renderStockChart(data) {
+    const canvas =
+        document.getElementById("chartStock");
+
+    if (!canvas || typeof Chart === "undefined") {
+        return;
+    }
+
+    destroyDashboardChart("stock");
+    showChartCanvas("chartStock");
+
+    dashboardCharts.stock =
+        new Chart(canvas, {
+            type: "bar",
+
+            data: {
+                labels: [
+                    "Stock total",
+                    "Pièces critiques",
+                    "Ruptures",
+                    "Maintenances planifiées",
+                    "Maintenances en cours"
+                ],
+
+                datasets: [{
+                    label: "Valeur",
+
+                    data: [
+                        Number(data.stock_total || 0),
+                        Number(data.pieces_critiques || 0),
+                        Number(data.pieces_rupture || 0),
+                        Number(data.maint_planifiees || 0),
+                        Number(data.maint_en_cours || 0)
+                    ],
+
+                    backgroundColor: [
+                        "#185FA5",
+                        "#F59E0B",
+                        "#EF4444",
+                        "#7C3AED",
+                        "#06B6D4"
+                    ],
+
+                    borderRadius: 9,
+                    borderSkipped: false
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+
+                        ticks: {
+                            precision: 0
+                        },
+
+                        grid: {
+                            color: "#EEF2F7"
+                        }
+                    },
+
+                    x: {
+                        grid: {
+                            display: false
+                        },
+
+                        ticks: {
+                            maxRotation: 30,
+                            minRotation: 0
+                        }
+                    }
+                },
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
 }
 async function loadUsers(){
 
